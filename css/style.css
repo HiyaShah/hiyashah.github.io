@@ -238,3 +238,40 @@ details summary::after {
     color: #666;
     transition: transform 0.3s ease, color 0.3s ease;
 }
+
+/* STYLES FOR PROJECT 0 IMAGE LAYOUT */
+.project-container {
+    padding: 10px 0;
+}
+.image-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px; /* Adds space between images */
+    margin-bottom: 10px;
+}
+.image-row img {
+    width: 50%; /* Each image takes up half the container width */
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px; /* Optional: adds rounded corners */
+}
+.single-image-container {
+    margin-bottom: 10px;
+}
+.single-image-container img {
+    max-width: 100%; /* Ensures GIF is responsive */
+    width: 100%; /* Overrides the general img rule */
+    height: auto;
+    display: block;
+    border-radius: 8px; /* Optional: adds rounded corners */
+}
+.caption {
+    text-align: center;
+    font-style: italic;
+    color: #555;
+    margin-bottom: 25px;
+}
+.profile-image {
+    width: 150px; /* Adjust size of your profile icon if needed */
+    border-radius: 50%;
+}
