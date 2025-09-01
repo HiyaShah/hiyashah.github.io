@@ -244,26 +244,26 @@ details summary::after {
     padding: 10px 0;
 }
 .image-row {
-    display: block; 
+    display: flex;
+    justify-content: space-between;
+    gap: 15px; /* Adds space between images */
+    margin-bottom: 10px;
 }
 .image-row img {
-    width: 75%; /* CHANGED from 100% to make the image smaller */
+    width: 50%; /* Each image takes up half the container width */
     height: auto;
     object-fit: cover;
-    border-radius: 8px;
-    display: block; /* Added to allow centering */
-    margin: 0 auto 15px; /* ADDED to center the image and keep bottom space */
+    border-radius: 8px; /* Optional: adds rounded corners */
 }
 .single-image-container {
     margin-bottom: 10px;
 }
 .single-image-container img {
-    max-width: 75%; /* CHANGED from 100% */
-    width: 100%; /* This can remain 100% to fill the max-width */
+    max-width: 100%; /* Ensures GIF is responsive */
+    width: 100%; /* Overrides the general img rule */
     height: auto;
     display: block;
-    border-radius: 8px;
-    margin: 0 auto; /* ADDED to center the image */
+    border-radius: 8px; /* Optional: adds rounded corners */
 }
 .caption {
     text-align: center;
@@ -272,6 +272,6 @@ details summary::after {
     margin-bottom: 25px;
 }
 .profile-image {
-    width: 150px;
+    width: 150px; /* Adjust size of your profile icon if needed */
     border-radius: 50%;
 }
