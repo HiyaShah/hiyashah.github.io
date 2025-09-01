@@ -249,7 +249,7 @@ details summary::after {
 }
 .image-row img {
     /* Change width to 100% and add margin for spacing */
-    width: 60%; 
+    width: 100%; 
     height: auto;
     object-fit: cover;
     border-radius: 8px;
