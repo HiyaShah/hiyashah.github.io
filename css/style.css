@@ -244,26 +244,26 @@ details summary::after {
     padding: 10px 0;
 }
 .image-row {
-    /* This is the main change: from flex to block */
     display: block; 
 }
 .image-row img {
-    /* Change width to 100% and add margin for spacing */
-    width: 100%; 
+    width: 75%; /* CHANGED from 100% to make the image smaller */
     height: auto;
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 15px; /* Adds space between stacked images */
+    display: block; /* Added to allow centering */
+    margin: 0 auto 15px; /* ADDED to center the image and keep bottom space */
 }
 .single-image-container {
     margin-bottom: 10px;
 }
 .single-image-container img {
-    max-width: 100%;
-    width: 100%;
+    max-width: 75%; /* CHANGED from 100% */
+    width: 100%; /* This can remain 100% to fill the max-width */
     height: auto;
     display: block;
     border-radius: 8px;
+    margin: 0 auto; /* ADDED to center the image */
 }
 .caption {
     text-align: center;
