@@ -27,6 +27,7 @@
         <div class="section-1">
           <img src="img\WebsiteIcon.jpeg" alt="Me!" class="profile-image">
             <h2>Hiya Shah</h2>
+            <h3>hiyashah.github.io</h3>
             <!-- <a href="https://instagram.com/kalieching?igshid=1jtw1vrlcdcv4"><i class="fab fa-instagram"></i></a> -->
             <!-- <a href="https://www.linkedin.com/in/kalie-ching/"><i class="fab fa-linkedin"></i></a> -->
             <a href="https://github.com/hiyashah"><i class="fab fa-github"></i></a>
@@ -137,19 +138,98 @@
 
                
 
-                <h4>2. Gaussian Pyramid (Large .tif images)</h4>
+                <h4>2. Multi-Scale Alignment using Gaussian Pyramid (Large .tif images)</h4>
                 <p class="caption">
-                  Split stacked B–G–R plates, aligned G/R → B with <strong>NCC</strong> (coarse-to-fine), removed roll-wrap rims using
-                  shift-aware cropping, then auto-cropped colored borders. Selected results below (all paths from <code>img/proj1/</code>).
+                  For larger (.tif) images, I constructed a Gaussian pyramid for each channel by convolving with a Gaussian kernel of size 5 x 5 and std. deviation of 1 pixel before downsampling by 
+                  factor of 2 per level by taking the alternate rows and columns. I repeated this process recursively until the smallest dimension fell below 100 pixels so that the operation isn't too expensive. At the coursest resolution, I performed the above exhaustive search to estimate 
+                  the translation that would maximize NCC similarity metric relative to the blue channel. I doubled the course displacement to map it onto the coordinates of the next finer resolution, and I refined the alignment by doing a local search around a 2-pixel window of the estimate. I repeated this until I reached the original resolution.
+                  For all of the displacement candidates, I scored them using the NCC similarity metric. However, just for emir, it seemed like the brightness differences between channels were large, so I aligned this particular image on gradient magnitude features computed via the Sobel operator (see below). Finally, I applied the displacements to the G and R channels and cropped away the non-overlapping margins. I found that using a pyramid reduced the search cost for .tif images, allowing all .tif images to run in just a few seconds each.
                 </p>
+
+                <!-- <div class="double-grid" style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 16px;
+                ">
+                  <figure style="flex: 1 1 calc(50% - 16px); max-width: calc(50% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/emir_old.jpg" alt="cathedral"
+                        style="width: 100%; height: auto; display: block;">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      Before: emir.jpg (Pyramind w/ NCC similarity metric)
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(50% - 16px); max-width: calc(50% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/emir.jpg" alt="monastery"
+                        style="width: 100%; height: auto; display: block;">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      After: emir.jpg (Pyramid w/ Gradient Magnitude metric)
+                    </figcaption>
+                  </figure>
+                </div> -->
+
+                <div class="triple-grid" style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 16px;
+                ">
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/emir_older.jpg" alt="church"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      emir.jpg (Pyramid with L2 Metric)
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/emir_old.jpg" alt="emir"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      emir.jpg (Pyramid with NCC metric)
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/emir.jpg" alt="harvesters"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      emir.jpg (Pyramid with Gradient Magnitude metric)
+                    </figcaption>
+                  </figure>
+                </div>
 
                 <h4>3. Auto-Cropping (All images)</h4>
                 <p class="caption">
-                  Split stacked B–G–R plates, aligned G/R → B with <strong>NCC</strong> (coarse-to-fine), removed roll-wrap rims using
-                  shift-aware cropping, then auto-cropped colored borders. Selected results below (all paths from <code>img/proj1/</code>).
+                  I auto-cropped color rims and black-and-white borders that remained post-aligning the channels by utilizing Edge Energy, which I read about in this paper, <a href="https://ieeexplore.ieee.org/document/1273918">"Learning to Detect Natural Image Boundaries
+                    Using Local Brightness, Color, and Texture Cues"</a>. I first normalized the reconstructed RGB image for consistent intensity across the image, converted to grayscale by averaging across RGB channels, and applied Sobel gradient filter to create a map of local gradient-magnitude based edge strengths. 
+                    I computed row-wise and column-wise means of the gradient magnitude map, and smoothed using a moving average filter. I crop away the rows and columns that exceed an "edge energy" threshold. I also added an 8-pixel padding margin to the cropped image to remove the remaining color fringing.
                 </p>
 
-                <h3>Small Images (Single-Scale)</h3>
+                <div class="double-grid" style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 16px;
+                ">
+                  <figure style="flex: 1 1 calc(50% - 16px); max-width: calc(50% - 16px); margin: 0; border: 1px solid black;">
+                    <img src="img/proj1/pyramid/melons_old.jpg" alt="cathedral"
+                        style="width: 100%; height: auto; display: block;">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      Before: melons.jpg (Uncropped)
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(50% - 16px); max-width: calc(50% - 16px); margin: 0; border: 1px solid black;">
+                    <img src="img/proj1/pyramid/melons.jpg" alt="monastery"
+                        style="width: 100%; height: auto; display: block;">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      After: emir.jpg (Auto-Cropped)
+                    </figcaption>
+                  </figure>
+                </div>
+
+
+                <h3>Final Colorization Results</h3>
+                <h4>Small Images (Single-Scale)</h4>
                 <div class="triple-grid" style="
                 display: flex;
                 flex-wrap: wrap;
@@ -180,7 +260,7 @@
                 </figure>
                 </div>
 
-                <h3>Large Images (Gaussian Pyramid)</h3>
+                <h4>Large Images (Multiscale Gaussian Pyramid)</h4>
                 <div class="triple-grid" style="
                   display: flex;
                   flex-wrap: wrap;
@@ -317,6 +397,8 @@
                   </figcaption>
                 </figure> -->
                 </div>
+
+                
 
                 <h3>Calculated Offsets</h3>
                 <table class="offsets-table">
