@@ -85,9 +85,10 @@ a{
 }
 
 img {
-    width: 100px;
+    width: auto !important;   /* overrides the 180px rule */
     height: auto;
-}
+    max-width: 100%;
+  }
 
 @media(max-width:780px){
     .grid-2{
@@ -273,5 +274,119 @@ details summary::after {
 }
 .profile-image {
     width: 150px; /* Adjust size of your profile icon if needed */
+    height: auto;
     border-radius: 50%;
 }
+/* 2) Make 3-per-row grids fill the width */
+.triple-grid,
+.image-grid {                           /* apply to your existing .image-grid too */
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+.triple-grid img,
+.image-grid img {
+  width: 100% !important;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+/* 3) Make the main content wider so images can grow */
+.body-container,
+.container {
+  width: 90%;            /* was 70%/80% */
+  max-width: 1200px;     /* optional: cap for huge screens */
+  margin: 0 auto;
+}
+
+/* 4) If you use the two-up row anywhere, let those breathe too */
+.image-row img {
+  width: 100%;           /* each image fills its grid cell */
+  max-width: none;
+}
+
+/* Responsive fallbacks */
+@media (max-width: 1000px) {
+  .triple-grid, .image-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .triple-grid, .image-grid { grid-template-columns: 1fr; }
+}
+
+.grid-2 {
+  grid-template-columns: 260px minmax(0, 1fr); /* wider content area */
+}
+
+/* Project content should use the full width */
+.section-2 {
+  width: 100%;
+}
+
+/* Remove any hidden caps from figures/cards */
+.image-grid figure,
+.triple-grid figure,
+figure.card {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Make .image-grid & .triple-grid actually 3-up and stretch */
+.image-grid,
+.triple-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+/* Kill any remaining img width caps inside these grids */
+.image-grid img,
+.triple-grid img {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* If any two-up rows exist, make each child a real column */
+.image-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.image-row img {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover;
+}
+
+/* Optional: ensure tables inside project don’t squeeze the page */
+.offsets-table {
+  width: 100%;
+  table-layout: fixed; /* prevents narrow columns from crushing layout */
+}
+
+/* Responsive fallbacks */
+@media (max-width: 1000px) {
+  .image-grid, .triple-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .image-grid, .triple-grid { grid-template-columns: 1fr; }
+}
+
+.quote-box {
+    border-left: 4px solid #7a7c80;
+    background-color: #f9f9f9;
+    padding: 12px 20px;
+    margin: 20px 0;
+    font-style: italic;
+    font-size: 1rem;
+    color: #333;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  

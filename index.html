@@ -9,6 +9,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <title>Hiya Shah</title>
+    <script>
+      window.MathJax = {
+        tex: {
+          // enable inline $...$ and \( ... \)
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        chtml: { matchFontHeight: false }  // optional: more consistent vertical spacing
+      };
+    </script>
+    <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
 </head>
 <body>
     <div class="grid-2">
@@ -29,7 +41,7 @@
               </div>
             </details>
 
-            <details class="portfolio-container" open>
+            <details class="portfolio-container">
               <summary>cs180 project 0 ✐ᝰ.</summary>
               <p></p>
               <div class="project-container">
@@ -56,30 +68,293 @@
                 <p class="caption">Dolly zoom effect on a Frog Bank stuffed animal.</p>
 
               </div>
-              <!-- <div class="art-grid">
-
-              </div> -->
+              <div class="art-grid">
+                <div id="art-popup" class="popup">
+                  <img class="popup-art" src="img/proj1/single_scale/extra_eleven_yurt.jpg" alt="Full-size image">
+                </div>
+                <div id="art-popup" class="popup">
+                  <img class="popup-art" src="img/proj1/single_scale/extra_eleven_yurt.jpg" alt="Full-size image">
+                </div>
+                <div id="art-popup" class="popup">
+                  <img class="popup-art" src="img/proj1/single_scale/extra_eleven_yurt.jpg" alt="Full-size image">
+                </div>
+                <div id="art-popup" class="popup">
+                  <img class="popup-art" src="img/proj1/single_scale/extra_eleven_yurt.jpg" alt="Full-size image">
+                </div>
+                <div id="art-popup" class="popup">
+                  <img class="popup-art" src="img/proj1/single_scale/extra_eleven_yurt.jpg" alt="Full-size image">
+                </div>
+              </div> 
             
               <!-- Art Popup -->
-              <!-- <div id="art-popup" class="popup">
-                <span class="art-close-btn">&times;</span>
-                <img class="popup-art" src="" alt="Full-size image">
-              </div> -->
+              
             </details>
-            
-            <details class="portfolio-container">
-              <summary>cs180 project 1 [◉¯] .𖥔 ݁ ˖</summary>
-              <p></p>
-              <!-- <div class="photo-grid"> -->
 
-              <!-- </div> -->
-            
-              <!-- Photo Popup -->
-              <!-- <div id="photo-popup" class="popup">
-                <span class="photo-close-btn">&times;</span>
-                <img class="popup-image" src="" alt="Full-size image">
-              </div> -->
+            <details class="portfolio-container" open>
+              <summary>cs180 project 1 [◉¯] .𖥔 ݁ ˖</summary>
+              <h2>Images of the Russian Empire: Colorizing the Prokudin–Gorskii Collection</h2>
+              <div class="project-container">
+                
+                <h3>Project Description</h3>
+                <p class="caption">
+                  My goal is to reconstruct full-color representations of the Prokudin-Gorskii glass plate collection by aligning and overlaying three monochrome channels (B, G, R) into a single color image (particularly, aligning the G and R channels). 
+                  Each input plate contains a tall image with three stacked exposures, all grayscale.
+                  My core challenge was alignment as each of the exposures were taken sequentially, resulting in small shifts in either the objects being captured or due to the motion of the camera, which caused color fringing.
+                  To reconstruct color images, I implemented single-scale alignment with exhaustive search, multiscale pyramid, and auto-cropping to remove border whitespaces and color fringes utilizing Sobel and smoothing.
+                  
+                </p>
+
+                <h3>Methods</h3>
+                <h4>1. Single-Scale Alignment (Small .jpg images)</h4>
+                <p class="caption">
+                  I split the input plate into three equal B/G/R channel tiles by one-third height each. Prior to aligning the G and R channels, I removed the roll-wrap rims by cropping a fixed-fraction from all sides (I played around with this), resulting in cropping 12% from each border, keeping the central 76%. 
+                  Then, I conducted exhaustive displacement search by evaluating each integer displacement within a window of [-15,15] pixels in the x- and y-dimension \( (dy, dx) \in [-15, 15] \times [-15, 15] \). I utilized and sought to maximize Normalized Cross-Correlation Similarity Metric for the image matching scoring. I tracked the best score and displacement, and applied them to the uncropped channels. I applied the shifts using np.roll, scoring only using the cropped interior as mentioned earlier. 
+                  I selected the shift with the highest NCC score, applied that to the full-res image, and stacked the channels into a color image. Lastly, I applied the auto-border crop to remove the white and colored rims, whose method I've outlined in part three below
+                  Prior to utilizing NCC, I at first tried using the L2 Norm (Euclidean Distance), but that resulted in misalignment as one can see on the monastery below. 
+                  I believe that NCC performed better than L2 as the similarity metric because the R, G, B exposures may have different brightness distributions, and L2 penalizes the pixel intensity differences while the NCC subtracts the mean and normalizes both channels before comparing them. The larger error produced by the L2 metric due to brightness differences could bias the alignment.
+                </p>
+                <div class="double-grid" style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 16px;
+                ">
+                  <figure style="flex: 1 1 calc(50% - 16px); max-width: calc(50% - 16px); margin: 0;">
+                    <img src="img/proj1/single_scale/monastery_old.jpg" alt="cathedral"
+                        style="width: 100%; height: auto; display: block;">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      Before: monastery.jpg (L2 similarity)
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(50% - 16px); max-width: calc(50% - 16px); margin: 0;">
+                    <img src="img/proj1/single_scale/monastery.jpg" alt="monastery"
+                        style="width: 100%; height: auto; display: block;">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      After: monastery.jpg (NCC similarity) + auto-crop
+                    </figcaption>
+                  </figure>
+                </div>
+
+               
+
+                <h4>2. Gaussian Pyramid (Large .tif images)</h4>
+                <p class="caption">
+                  Split stacked B–G–R plates, aligned G/R → B with <strong>NCC</strong> (coarse-to-fine), removed roll-wrap rims using
+                  shift-aware cropping, then auto-cropped colored borders. Selected results below (all paths from <code>img/proj1/</code>).
+                </p>
+
+                <h4>3. Auto-Cropping (All images)</h4>
+                <p class="caption">
+                  Split stacked B–G–R plates, aligned G/R → B with <strong>NCC</strong> (coarse-to-fine), removed roll-wrap rims using
+                  shift-aware cropping, then auto-cropped colored borders. Selected results below (all paths from <code>img/proj1/</code>).
+                </p>
+
+                <h3>Small Images (Single-Scale)</h3>
+                <div class="triple-grid" style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 16px;
+              ">
+                <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                  <img src="img/proj1/single_scale/cathedral.jpg" alt="cathedral"
+                      style="width: 100%; height: auto; display: block; ">
+                  <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                    cathedral.jpg
+                  </figcaption>
+                </figure>
+
+                <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                  <img src="img/proj1/single_scale/monastery.jpg" alt="monastery"
+                      style="width: 100%; height: auto; display: block; ">
+                  <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                    monastery.jpg
+                  </figcaption>
+                </figure>
+
+                <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                  <img src="img/proj1/single_scale/tobolsk.jpg" alt="tobolsk"
+                      style="width: 100%; height: auto; display: block; ">
+                  <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                    tobolsk.jpg
+                  </figcaption>
+                </figure>
+                </div>
+
+                <h3>Large Images (Gaussian Pyramid)</h3>
+                <div class="triple-grid" style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 16px;
+                ">
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/church.jpg" alt="church"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      church.jpg
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/emir.jpg" alt="emir"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      emir.jpg
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/harvesters.jpg" alt="harvesters"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      harvesters.jpg
+                    </figcaption>
+                  </figure>
+                </div>
+                <div class="triple-grid" style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 16px;
+                ">
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/icon.jpg" alt="icon"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      icon.jpg
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/italil.jpg" alt="italil"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      italil.jpg
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/lastochikino.jpg" alt="lastochikino"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      lastochikino.jpg
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/lugano.jpg" alt="lugano"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      lugano.jpg
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/melons.jpg" alt="melons"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      melons.jpg
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/self_portrait.jpg" alt="self_portrait"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      self_portrait.jpg
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/siren.jpg" alt="siren"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      siren.jpg
+                    </figcaption>
+                  </figure>
+
+                  <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                    <img src="img/proj1/pyramid/three_generations.jpg" alt="three_generations"
+                        style="width: 100%; height: auto; display: block; ">
+                    <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                      three_generations.jpg
+                    </figcaption>
+                  </figure>
+                </div>
+                <h3>Extra Images from Collection</h3>
+                <div class="triple-grid" style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 16px;
+              ">
+                <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                  <img src="img/proj1/single_scale/extra_eleven_yurt.jpg" alt="eleven_people"
+                      style="width: 100%; height: auto; display: block; ">
+                  <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                    eleven_people.jpg
+                  </figcaption>
+                </figure>
+
+                <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                  <img src="img/proj1/single_scale/extra_embroidered.jpg" alt="embroidered"
+                      style="width: 100%; height: auto; display: block; ">
+                  <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                    embroidered_pouches.jpg
+                  </figcaption>
+                </figure>
+
+                <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                  <img src="img/proj1/single_scale/extra_khan.jpg" alt="khan"
+                      style="width: 100%; height: auto; display: block; ">
+                  <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                    khan.jpg
+                  </figcaption>
+                </figure>
+
+                <!-- <figure style="flex: 1 1 calc(33.33% - 16px); max-width: calc(33.33% - 16px); margin: 0;">
+                  <img src="img/proj1/single_scale/extra_oven.jpg" alt="oven"
+                      style="width: 100%; height: auto; display: block; ">
+                  <figcaption style="text-align: center; font-style: italic; margin-top: 6px;">
+                    oven.jpg
+                  </figcaption>
+                </figure> -->
+                </div>
+
+                <h3>Calculated Offsets</h3>
+                <table class="offsets-table">
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>Green offset (dx, dy)</th>
+                      <th>Red offset (dx, dy)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>cathedral.jpg</td><td>(2, 5)</td><td>(3, 12)</td></tr>
+                    <tr><td>monastery.jpg</td><td>(2, -3)</td><td>(2, 3)</td></tr>
+                    <tr><td>tobolsk.jpg</td><td>(3, 3)</td><td>(3, 6)</td></tr>
+                    <tr><td>church.tif</td><td>(4, 25)</td><td>(-4, 58)</td></tr>
+                    <tr><td>emir.tif</td><td>(24, 49)</td><td>(40, 107)</td></tr>
+                    <tr><td>harvesters.tif</td><td>(17, 60)</td><td>(13, 124)</td></tr>
+                    <tr><td>icon.tif</td><td>(17, 41)</td><td>(23, 89)</td></tr>
+                    <tr><td>italil.tif</td><td>(21, 38)</td><td>(35, 77)</td></tr>
+                    <tr><td>lastochikino.tif</td><td>(-2, -3)</td><td>(-9, 75)</td></tr>
+                    <tr><td>lugano.tif</td><td>(-16, 41)</td><td>(-29, 93)</td></tr>
+                    <tr><td>melons.tif</td><td>(10, 81)</td><td>(13, 178)</td></tr>
+                    <tr><td>self_portrait.tif</td><td>(29, 79)</td><td>(37, 176)</td></tr>
+                    <tr><td>siren.tif</td><td>(-6, 49)</td><td>(-25, 96)</td></tr>
+                    <tr><td>three_generations.tif</td><td>(14, 53)</td><td>(11, 111)</td></tr>
+                    <tr><td>eleven_yurt.jpg</td><td>(6, 3)</td><td>(13, 5)</td></tr>
+                    <tr><td>embroidered.jpg</td><td>(6, 6)</td><td>(11, 9)</td></tr>
+                    <tr><td>khan.jpg</td><td>(5, 0)</td><td>(11, -2)</td></tr>
+                    <!-- <tr><td>oven.jpg</td><td>(6, 2)</td><td>(13, 4)</td></tr> -->
+
+                  </tbody>
+                </table>
+              </div>
             </details>
+
+            
+            
+            
             <p>website template adapted from Kalie's lovely webpage <a href="https://kalieching.github.io/">here.</a></p>
         </div>
     </div>
