@@ -1,0 +1,784 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Project 2 - Fun with Filters &amp; Frequencies </title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(128, 125, 120, 1);
+	fill: rgba(128, 125, 120, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(204, 121, 47, 1);
+	fill: rgba(204, 121, 47, 1);
+}
+.highlight-yellow {
+	color: rgba(195, 148, 67, 1);
+	fill: rgba(195, 148, 67, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(63, 126, 190, 1);
+	fill: rgba(63, 126, 190, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(179, 84, 136, 1);
+	fill: rgba(179, 84, 136, 1);
+}
+.highlight-red {
+	color: rgba(201, 85, 73, 1);
+	fill: rgba(201, 85, 73, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 111, 200, 0.09);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(128, 125, 120, 1);
+	fill: rgba(128, 125, 120, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(204, 121, 47, 1);
+	fill: rgba(204, 121, 47, 1);
+}
+.block-color-yellow {
+	color: rgba(195, 148, 67, 1);
+	fill: rgba(195, 148, 67, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(63, 126, 190, 1);
+	fill: rgba(63, 126, 190, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(179, 84, 136, 1);
+	fill: rgba(179, 84, 136, 1);
+}
+.block-color-red {
+	color: rgba(201, 85, 73, 1);
+	fill: rgba(201, 85, 73, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(232, 242, 250, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 99, 174, 0.172); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="27afab34-e8ee-8007-88a0-d2e4c63443ae" class="page serif"><header><img class="page-cover-image" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/portal_times_square_blended_fast.png" style="object-position:center 50%"/><h1 class="page-title">Project 2 - Fun with Filters &amp; Frequencies </h1><p class="page-description"></p></header><div class="page-body"><p id="27afab34-e8ee-80f9-bf7d-f1e92bb2ce61" class="">by Hiya Shah </p><h2 id="27afab34-e8ee-80d0-a6c9-c0395226c58a" class=""><mark class="highlight-pink_background">Overview</mark> </h2><p id="27afab34-e8ee-8028-ad31-ebfbec8c5b08" class="">In this project, I explored filtering operations like 2D convolution and edge detection using finite difference operators &amp; derivative of Gaussian. I also implementing image sharpening (unsharp masking), hybrid images using lowpass/highpass frequency techniques, and multiresolution blending with Gaussian and Laplacian stacks to recreate the “Oraple” and irregular image combos.</p><h2 id="27afab34-e8ee-806d-9b0a-c2f8ecf78372" class=""><mark class="highlight-pink_background">Part 1 - Fun with Filters </mark></h2><h3 id="27afab34-e8ee-8042-9ed0-e9af9b9d2295" class=""><mark class="highlight-brown">1.1 Convolutions from Scratch </mark></h3><p id="27afab34-e8ee-805f-8e75-c801c66d990e" class="">In this part, I implemented 2D convolution from scratch with both 4-loops and 2-loops in numpy. In the 4-loop implementation, I iterate through every output pixel and every kernel filter element. In the 2-loop implementation, I used numpy vectorized operations by extracting image patches. Please see below for boundary/runtime comparisons between my 4-loop and 2-loop implementations and scipy’s convolve2d implementation.</p><p id="27afab34-e8ee-80fa-818c-c20d069975c4" class="">
+</p><div id="27afab34-e8ee-8050-957b-ff65f8f3cabc" class="column-list"><div id="27afab34-e8ee-8060-b376-f63539f32514" style="width:81.25%" class="column"><figure id="27afab34-e8ee-8042-8905-c3367f07956f" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.18.05_PM.png"><img style="width:720px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.18.05_PM.png"/></a></figure><p id="27afab34-e8ee-80a2-9417-eeaa8d90102e" class="">
+</p></div><div id="27afab34-e8ee-8056-9a3a-fcb563fa2243" style="width:18.750000000000007%" class="column"><figure id="27afab34-e8ee-8055-85a3-c2a060ce8cb0" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_6.58.11_AM.png"><img style="width:192px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_6.58.11_AM.png"/></a></figure></div></div><figure id="27afab34-e8ee-8080-bab6-f0684f785b2d" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/6349fc85-b45c-4fd9-8e11-c89dd09cfbf9.png"><img style="width:576px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/6349fc85-b45c-4fd9-8e11-c89dd09cfbf9.png"/></a></figure><p id="27afab34-e8ee-801b-ab93-edc382ab6a5c" class=""><strong>Runtime / Boundaries Comparison with </strong><code><strong>scipy.signal.convolve2d</strong></code></p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="27afab34-e8ee-80cc-bc0e-cf2f241dc476"><div style="width:100%"><p id="27afab34-e8ee-80dd-8034-f0adc3ca79e9" class=""><span style="border-bottom:0.05em solid">Runtime Comparison</span></p><p id="27afab34-e8ee-80ea-8c33-e5e2b83f5348" class="">I tested on a 1024 x 768 image of myself with a 9x9 kernel and averaged 3 runs.</p><p id="27afab34-e8ee-8042-a38f-c7df72aaa1a2" class="">My implementation of 4 loop convolution: 13060.12 ms<br/>My implementation of 2 loop convolution: 1909.48 ms  (speedup vs 4-loops: 6.84×)<br/><code><strong>scipy.signal.convolve2d</strong></code>: 76.99 ms  (speedup vs 4-loops: 169.64×)</p><p id="27afab34-e8ee-8052-8ad7-f2b0c4e473c1" class="">I found that while both 2-loop and 4-loop are slower than the scipy’s implementation of convolve2d, the 2-loop is significantly faster than the 4-loop version because I replaced iterating over kernel with vectorized numpy operation.  </p><p id="27afab34-e8ee-80a7-95f8-c61b8185d736" class=""><span style="border-bottom:0.05em solid">Boundaries Comparison</span> </p><p id="27afab34-e8ee-807f-b1e8-e145d0ee1d93" class="">In both 4-loop and 2-loop convolution implementations, I used zero-padding to handle the image boundaries. I calculated padding size as kernel_size // 2 so that the output image dimensions are maintained. To add the zeros around the image, I used np.pad() with mode = ‘constant’. Comparing with scipy.signal.convolve2d, it matches their boundary=’fill’ mode with the fillvalue=0.</p></div></figure><p id="27afab34-e8ee-8097-8132-dd75147bb888" class=""><strong>Code Snippets</strong></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="27afab34-e8ee-80ab-9c2e-d6f69ac5dcb1" class="code code-wrap"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">class Convolution:
+	# I also imported and used time to compare wall clock time of my implementation vs scipy&#x27;s
+	def __init__(self, img, kernel):
+	        self.img = img 
+	        self.kernel = kernel
+	        self.kernel_flipped = self.kernel[::-1, ::-1]
+	        self.height, self.width = self.img.shape 
+	        self.kernel_height, self.kernel_width = self.kernel.shape 
+	        self.padding_height, self.padding_width = self.kernel_height//2, self.kernel_width//2
+	        self.padded_img = np.pad(self.img, ((self.padding_height, self.padding_height), (self.padding_width, self.padding_width)), mode=&#x27;constant&#x27;) 
+	    
+	def convolution_2_loops(self):
+	        img_output = np.zeros((self.height, self.width))
+	        for height_i in range(self.height):
+	            for width_i in range(self.width):
+	                patch_under_kernel = self.padded_img[height_i:height_i + self.kernel_height, width_i:width_i + self.kernel_width]
+	                img_output[height_i, width_i] = np.sum(patch_under_kernel * self.kernel_flipped)
+	        return img_output
+	def convolution_4_loops(self):
+	        img_output = np.zeros((self.height, self.width))
+	        for height_i in range(self.height):
+	            for width_i in range(self.width):
+	                sum = 0
+	                for kernel_height_i in range(self.kernel_height):
+	                    for kernel_width_i in range(self.kernel_width):
+	                        sum += self.padded_img[height_i + kernel_height_i, width_i + kernel_width_i] * self.kernel_flipped[kernel_height_i, kernel_width_i]
+	                img_output[height_i, width_i] = sum
+	        return img_output</code></pre><p id="27afab34-e8ee-80c5-bd80-e63a3af1892e" class="">
+</p><h3 id="27afab34-e8ee-8046-89ce-c35472d7db82" class=""><mark class="highlight-brown">1.2 Finite Difference Operator </mark></h3><p id="27afab34-e8ee-804c-9760-db320fbc2db6" class="">I used the finite difference operators for edge detection in the cameraman image below, where </p><p id="27afab34-e8ee-80f2-85cf-c79402f24ec2" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mi>x</mi></msub><mo>=</mo><mo stretchy="false">[</mo><mn>1</mn><mo separator="true">,</mo><mn>0</mn><mo separator="true">,</mo><mo>−</mo><mn>1</mn><mo stretchy="false">]</mo><mo separator="true">,</mo><msub><mi>D</mi><mi>y</mi></msub><mo>=</mo><mo stretchy="false">[</mo><mn>1</mn><mo separator="true">,</mo><mn>0</mn><mo separator="true">,</mo><mo>−</mo><mn>1</mn><msup><mo stretchy="false">]</mo><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">D_x = [1, 0, -1], D_y = [ 1, 0, -1]^T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mopen">[</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">−</span><span class="mord">1</span><span class="mclose">]</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0913em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">−</span><span class="mord">1</span><span class="mclose"><span class="mclose">]</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span></p><p id="27afab34-e8ee-807d-9b91-e502bd516d07" class="">was for horizontal and vertical edges respectively. I first convolved the cameraman image with the Dx and Dy filters to compute the partial derivatives Ix and Iy respectively. I then calculated the gradient magnitude  <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∇</mi><mi>I</mi><mi mathvariant="normal">∣</mi><mo>=</mo><msqrt><mo stretchy="false">(</mo></msqrt><msubsup><mi>I</mi><mi>x</mi><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>I</mi><mi>y</mi><mn>2</mn></msubsup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">|\nabla I| = \sqrt(I_x^2+I_y^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣∇</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.24em;vertical-align:-0.305em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.935em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mopen" style="padding-left:1em;">(</span></span><span style="top:-2.895em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg xmlns="http://www.w3.org/2000/svg" width='400em' height='1.28em' viewBox='0 0 400000 1296' preserveAspectRatio='xMinYMin slice'><path d='M263,681c0.7,0,18,39.7,52,119
+c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
+c340,-704.7,510.7,-1060.3,512,-1067
+l0 -0
+c4.7,-7.3,11,-11,19,-11
+H40000v40H1012.3
+s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
+c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
+s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
+c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
+M1001 80h400000v40h-400000z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.305em;"><span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-2.453em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1972em;vertical-align:-0.3831em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-2.453em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3831em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span>. Finally, I applied a threshold of 0.20 (where  <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∇</mi><mi>I</mi><mi mathvariant="normal">∣</mi><mo>&gt;</mo><mn>0.20</mn></mrow><annotation encoding="application/x-tex">|\nabla I| &gt; 0.20</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣∇</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.20</span></span></span></span></span><span>﻿</span></span>)) to create a binarized edge map. To select this threshold, I experimented with ~11 values, finding that lower thresholds below 0.15 captured more edges but included noise from the grass and sky while higher threshold above 0.25 removed the noisy grass/sky edges but also removed needed edges like the triangular awning and coat outline. For the binarized edge map, I more specifically used the below formulation where T = 0.20.</p><figure id="27afab34-e8ee-8037-afad-c3c5c39b6968" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>E</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo>=</mo><mrow><mo fence="true">{</mo><mtable rowspacing="0.36em" columnalign="left left" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>if </mtext><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∇</mi><mi>I</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mi mathvariant="normal">∣</mi><mo>≥</mo><mi>T</mi></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mtext>otherwise</mtext></mstyle></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">E(x,y) = \begin{cases}
+1 &amp; \text{if } |\nabla I(x,y)| \geq T \\
+0 &amp; \text{otherwise}
+\end{cases}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3em;vertical-align:-1.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size4">{</span></span><span class="mord"><span class="mtable"><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.69em;"><span style="top:-3.69em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord">1</span></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.19em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:1em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.69em;"><span style="top:-3.69em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord">if </span></span><span class="mord">∣∇</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord">otherwise</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.19em;"><span></span></span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div></figure><figure id="27afab34-e8ee-809e-b8a3-f87fc3e5556f" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/fe3fee6e-597e-4a9e-91ce-bcdca7049b43.png"><img style="width:192px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/fe3fee6e-597e-4a9e-91ce-bcdca7049b43.png"/></a></figure><p id="27afab34-e8ee-80b7-9b3c-f75190dca4d2" class="">
+</p><figure id="27afab34-e8ee-80d3-82ee-cb057a945141" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.22.35_PM.png"><img style="width:432px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.22.35_PM.png"/></a></figure><p id="27afab34-e8ee-80ec-adef-c29d1db3260f" class="">
+</p><figure id="27afab34-e8ee-8039-b534-c5ad7a84f0c9" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.22.58_PM.png"><img style="width:432px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.22.58_PM.png"/></a></figure><h3 id="27afab34-e8ee-80ec-b877-c8131aca005c" class="">1.3 Derivative of Gaussian (DoG) Filter </h3><p id="27afab34-e8ee-8034-9159-f963192cc429" class="">I created the 2D gaussian filter by using cv2.getGaussianKernel() to get the 1d gaussian and taking its outer product as below with default kernel size 9x9 and sigma=1.6. I’ve displayed the DoG_x and DoG_y filters as images below, and they act like oriented edge detectors.</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="27afab34-e8ee-803f-9467-e5cffb7c00e7" class="code code-wrap"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">def gaussian_kernel_2d(ksize=9, sigma=1.6):
+        gaussian_1d = cv2.getGaussianKernel(ksize, sigma)        
+        return (gaussian_1d @ gaussian_1d.T).astype(np.float32) </code></pre><p id="27afab34-e8ee-8080-91e2-efa1ba3b7071" class="">(a) For the two step approach, I computed the below. I convolved the original cameraman image with the 2d gaussian filter I constructed above to get the gaussian blurred image, and then convolved the blurred image with the finite difference operators from part 1.2. The gradient magnitude of the smoothed derivatives is displayed in (a) below. I then applied a threshold of 0.06 (where  <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∇</mi><mi>I</mi><mi mathvariant="normal">∣</mi><mo>&gt;</mo><mn>0.20</mn></mrow><annotation encoding="application/x-tex">|\nabla I| &gt; 0.20</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣∇</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.20</span></span></span></span></span><span>﻿</span></span>) to create a binarized edge map. This threshold is lower than the threshold in part 1.2 because I noticed it resulted in thicker, smoother edge boundaries.</p><figure id="27afab34-e8ee-8081-9e0d-c23fa14db1d2" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left" columnspacing="0em"><mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>I</mi><mtext>smoothed</mtext></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>I</mi><mo>∗</mo><mi>G</mi></mrow></mstyle></mtd><mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr><mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>I</mi><mi>x</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><msub><mi>I</mi><mtext>smoothed</mtext></msub><mo>∗</mo><msub><mi>D</mi><mi>x</mi></msub></mrow></mstyle></mtd><mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr><mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>I</mi><mi>y</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><msub><mi>I</mi><mtext>smoothed</mtext></msub><mo>∗</mo><msub><mi>D</mi><mi>y</mi></msub></mrow></mstyle></mtd><mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{align}
+I_{\text{smoothed}} &amp;= I \ast G \\
+I_x &amp;= I_{\text{smoothed}} \ast D_x \\
+I_y &amp;= I_{\text{smoothed}} \ast D_y
+\end{align}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:4.5em;vertical-align:-2em;"></span><span class="mtable"><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.5em;"><span style="top:-4.66em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">smoothed</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.16em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.66em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.5em;"><span style="top:-4.66em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">G</span></span></span><span style="top:-3.16em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">smoothed</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.66em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">smoothed</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2em;"><span></span></span></span></span></span></span></span><span class="tag"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.5em;"><span style="top:-4.5em;"><span class="pstrut" style="height:2.84em;"></span><span class="eqn-num"></span></span><span style="top:-3em;"><span class="pstrut" style="height:2.84em;"></span><span class="eqn-num"></span></span><span style="top:-1.5em;"><span class="pstrut" style="height:2.84em;"></span><span class="eqn-num"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2em;"><span></span></span></span></span></span></span></span></span></div></figure><p id="27afab34-e8ee-8033-8df1-da52a7f33bf1" class="">(b) For the one step approach, I computed the below using the associativity of convolution that we learned in lecture.  I found that the one step approach such that I convolve the original image directly with the DoG filters gives identical results to the two step approach.</p><p id="27afab34-e8ee-80f9-8ea0-d6b731e1d257" class="">In comparison to part 1.2, I noticed that applying smoothing with DoG filters resulted in cleaner edge detection with less noise, stronger preservation of the significant edges like the man’s coat and horizon line, smoother and more continuous edges, and a lowered sensitivity to features like texture in the grass/coat.</p><p id="27afab34-e8ee-80f7-88ff-f426fddae871" class="">
+</p><figure id="27afab34-e8ee-80fc-930b-ec255268e6fb" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left" columnspacing="0em"><mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>I</mi><mi>x</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>I</mi><mo>∗</mo><mo stretchy="false">(</mo><mi>G</mi><mo>∗</mo><msub><mi>D</mi><mi>x</mi></msub><mo stretchy="false">)</mo><mo>=</mo><mi>I</mi><mo>∗</mo><msub><mtext>DoG</mtext><mi>x</mi></msub></mrow></mstyle></mtd><mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr><mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>I</mi><mi>y</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>I</mi><mo>∗</mo><mo stretchy="false">(</mo><mi>G</mi><mo>∗</mo><msub><mi>D</mi><mi>y</mi></msub><mo stretchy="false">)</mo><mo>=</mo><mi>I</mi><mo>∗</mo><msub><mtext>DoG</mtext><mi>y</mi></msub></mrow></mstyle></mtd><mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{align}
+I_x &amp;= I \ast (G \ast D_x) = I \ast \text{DoG}_x \\
+I_y &amp;= I \ast (G \ast D_y) = I \ast \text{DoG}_y
+\end{align}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3em;vertical-align:-1.25em;"></span><span class="mtable"><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.75em;"><span style="top:-3.91em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.25em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.75em;"><span style="top:-3.91em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mopen">(</span><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord text"><span class="mord">DoG</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mopen">(</span><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord text"><span class="mord">DoG</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.25em;"><span></span></span></span></span></span></span></span><span class="tag"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.75em;"><span style="top:-3.75em;"><span class="pstrut" style="height:2.84em;"></span><span class="eqn-num"></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:2.84em;"></span><span class="eqn-num"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.25em;"><span></span></span></span></span></span></span></span></span></div></figure><p id="27afab34-e8ee-80f1-b639-da78020caf3c" class="">where</p><figure id="27afab34-e8ee-809b-b46e-ebaf12a7f0ba" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left" columnspacing="0em"><mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mtext>DoG</mtext><mi>x</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>G</mi><mo>∗</mo><msub><mi>D</mi><mi>x</mi></msub></mrow></mstyle></mtd><mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr><mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mtext>DoG</mtext><mi>y</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>G</mi><mo>∗</mo><msub><mi>D</mi><mi>y</mi></msub></mrow></mstyle></mtd><mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{align}
+\text{DoG}_x &amp;= G \ast D_x \\
+\text{DoG}_y &amp;= G \ast D_y \\
+\end{align}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3em;vertical-align:-1.25em;"></span><span class="mtable"><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.75em;"><span style="top:-3.91em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord text"><span class="mord">DoG</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord text"><span class="mord">DoG</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.25em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.75em;"><span style="top:-3.91em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.25em;"><span></span></span></span></span></span></span></span><span class="tag"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.75em;"><span style="top:-3.75em;"><span class="pstrut" style="height:2.84em;"></span><span class="eqn-num"></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:2.84em;"></span><span class="eqn-num"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.25em;"><span></span></span></span></span></span></span></span></span></div></figure><figure id="27afab34-e8ee-8013-9af3-dbd7b0774cd6" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.29.58_PM.png"><img style="width:432px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.29.58_PM.png"/></a></figure><p id="27afab34-e8ee-80a2-a687-e6edc0cd2247" class="">
+</p><figure id="27afab34-e8ee-809c-b6f8-c9ce62d421bd" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.29.38_PM.png"><img style="width:432px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.29.38_PM.png"/></a></figure><figure id="27afab34-e8ee-8079-b7d3-e7e3f70b095d" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.30.21_PM.png"><img style="width:432px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.30.21_PM.png"/></a></figure><figure id="27afab34-e8ee-8007-8a56-cce0b61e973f" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.30.38_PM.png"><img style="width:288px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-25_at_8.30.38_PM.png"/></a></figure><p id="27afab34-e8ee-8048-889f-e8e80e90676c" class="">
+</p><p id="27afab34-e8ee-803a-9562-fdec03d87f43" class="">
+</p><h2 id="27afab34-e8ee-8027-9bba-eecbc55023d0" class=""><mark class="highlight-pink_background">Part 2 - Fun with Frequencies </mark></h2><h3 id="27afab34-e8ee-8005-aecd-e2e97154aeb7" class=""><mark class="highlight-brown">2.1 Image “Sharpening”</mark></h3><p id="27afab34-e8ee-80ef-a5c9-f9b0ac023bc3" class="">
+</p><p id="27afab34-e8ee-80a2-bb6a-edf79189e3a7" class="">I utilized the unsharp masking technique from lecture, and the basis for this was that images look sharper when they contain the stronger, higher frequency components. The Gaussian filter <strong>G</strong> is the lowpass filter that preserves low-frequency components of the image <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mtext>low</mtext></msub><mo>=</mo><mi>I</mi><mo>∗</mo><mi>G</mi></mrow><annotation encoding="application/x-tex">I_{\text{low}} = I * G
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">low</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">G</span></span></span></span></span><span>﻿</span></span> . To isolate the high frequency components that contain the edge / finer details, I subtracted low pass filtered image from original image as follows: <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mtext>high</mtext></msub><mo>=</mo><mi>I</mi><mo>−</mo><msub><mi>I</mi><mtext>low</mtext></msub><mo>=</mo><mi>I</mi><mo>−</mo><mo stretchy="false">(</mo><mi>I</mi><mo>∗</mo><mi>G</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">I_{\text{high}} = I - I_{\text{low}} = I - (I * G)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">high</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">low</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">G</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span>. To create the sharpened image, I added scaled <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span></span><span>﻿</span></span> high frequency components back to the original image like this: <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mtext>sharp</mtext></msub><mo>=</mo><mi>I</mi><mo>+</mo><mi>α</mi><mo>⋅</mo><msub><mi>I</mi><mtext>high</mtext></msub></mrow><annotation encoding="application/x-tex">I_{\text{sharp}} = I + \alpha \cdot I_{\text{high}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">sharp</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4445em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">high</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span>, and I tuned alpha as seen below. Higher alpha results in a sharper image. I substituted in the high frequency component to derive:</p><figure id="27afab34-e8ee-80c4-99b2-e05cc6b77e6b" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left" columnspacing="0em"><mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>I</mi><mtext>sharp</mtext></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>I</mi><mo>+</mo><mi>α</mi><mo stretchy="false">(</mo><mi>I</mi><mo>−</mo><msub><mi>I</mi><mtext>low</mtext></msub><mo stretchy="false">)</mo></mrow></mstyle></mtd><mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr><mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>I</mi><mtext>sharp</mtext></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>I</mi><mo>+</mo><mi>α</mi><mi>I</mi><mo>−</mo><mi>α</mi><msub><mi>I</mi><mtext>low</mtext></msub></mrow></mstyle></mtd><mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr><mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>I</mi><mtext>sharp</mtext></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mi>α</mi><mo stretchy="false">)</mo><mi>I</mi><mo>−</mo><mi>α</mi><msub><mi>I</mi><mtext>low</mtext></msub></mrow></mstyle></mtd><mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{align}
+I_{\text{sharp}} &amp;= I + \alpha(I - I_{\text{low}}) \\
+I_{\text{sharp}} &amp;= I + \alpha I - \alpha I_{\text{low}} \\
+I_{\text{sharp}} &amp;= (1 + \alpha)I - \alpha I_{\text{low}}
+\end{align}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:4.5em;vertical-align:-2em;"></span><span class="mtable"><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.5em;"><span style="top:-4.66em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">sharp</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.16em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">sharp</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.66em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">sharp</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.5em;"><span style="top:-4.66em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">low</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.16em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">low</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.66em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">low</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2em;"><span></span></span></span></span></span></span></span><span class="tag"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.5em;"><span style="top:-4.5em;"><span class="pstrut" style="height:2.84em;"></span><span class="eqn-num"></span></span><span style="top:-3em;"><span class="pstrut" style="height:2.84em;"></span><span class="eqn-num"></span></span><span style="top:-1.5em;"><span class="pstrut" style="height:2.84em;"></span><span class="eqn-num"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2em;"><span></span></span></span></span></span></span></span></span></div></figure><figure id="27afab34-e8ee-80d3-adb0-da554ed83afc" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>I</mi><mtext>sharp</mtext></msub><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mi>α</mi><mo stretchy="false">)</mo><mi>I</mi><mo>−</mo><mi>α</mi><mo stretchy="false">(</mo><mi>I</mi><mo>∗</mo><mi>G</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">I_{\text{sharp}} = (1 + \alpha)I - \alpha(I * G)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">sharp</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">G</span><span class="mclose">)</span></span></span></span></span></div></figure><p id="27afab34-e8ee-80fa-8146-e53b10482329" class="">Using convolution distributive property I learned about in lecture, I rewrote the above into the below, where <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi></mrow><annotation encoding="application/x-tex">\delta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span></span></span></span></span><span>﻿</span></span> is impulse.  </p><figure id="27afab34-e8ee-80ed-b40e-eca123e2a544" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>I</mi><mtext>sharp</mtext></msub><mo>=</mo><mi>I</mi><mo>∗</mo><mo stretchy="false">[</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mi>α</mi><mo stretchy="false">)</mo><mi>δ</mi><mo>−</mo><mi>α</mi><mi>G</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">I_{\text{sharp}} = I * [(1 + \alpha)\delta - \alpha G]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">sharp</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord mathnormal">G</span><span class="mclose">]</span></span></span></span></span></div></figure><p id="27afab34-e8ee-8027-b34e-d50ae6615cd8" class="">Finally, I got the unsharp mask filter <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mtext>unsharp</mtext></msub><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mi>α</mi><mo stretchy="false">)</mo><mi>δ</mi><mo>−</mo><mi>α</mi><mi>G</mi></mrow><annotation encoding="application/x-tex">H_{\text{unsharp}} = (1 + \alpha)\delta - \alpha G</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0813em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">unsharp</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord mathnormal">G</span></span></span></span></span><span>﻿</span></span>.</p><p id="27afab34-e8ee-8066-b150-fa02a7be4849" class="">Using the above derivations, I implement two approaches, a two step and one step approach, which I verified had the same result.</p><p id="27afab34-e8ee-80a9-9ac5-e19adeccb3b4" class="">Two-Step (I first blur the image, then subtract low frequencies aka blurred from high frequencies):</p><figure id="27afab34-e8ee-8049-9349-d3e8619eedf3" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>I</mi><mtext>low</mtext></msub><mo>=</mo><mi>I</mi><mo>∗</mo><mi>G</mi><mspace linebreak="newline"></mspace><msub><mi>I</mi><mtext>sharp</mtext></msub><mo>=</mo><mi>I</mi><mo>+</mo><mi>α</mi><mo stretchy="false">(</mo><mi>I</mi><mo>−</mo><msub><mi>I</mi><mtext>low</mtext></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">I_{\text{low}} = I * G \\ I_{\text{sharp}} = I + \alpha(I - I_{\text{low}})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">low</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">G</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">sharp</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">low</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></div></figure><p id="27afab34-e8ee-80e7-954f-cd6c948d5faa" class="">One-Step Single Convolution:</p><figure id="27afab34-e8ee-8096-a411-eda12f4f836d" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>H</mi><mtext>unsharp</mtext></msub><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mi>α</mi><mo stretchy="false">)</mo><mi>δ</mi><mo>−</mo><mi>α</mi><mi>G</mi><mspace linebreak="newline"></mspace><msub><mi>I</mi><mtext>sharp</mtext></msub><mo>=</mo><mi>I</mi><mo>∗</mo><msub><mi>H</mi><mtext>unsharp</mtext></msub></mrow><annotation encoding="application/x-tex">H_{\text{unsharp}} = (1 + \alpha)\delta - \alpha G \\I_{\text{sharp}} = I * H_{\text{unsharp}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0813em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">unsharp</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord mathnormal">G</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">sharp</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0813em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">unsharp</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></span></div></figure><h3 id="27afab34-e8ee-8089-85c3-fc27ce2a465f" class=""><span style="border-bottom:0.05em solid">Image Sharpening Results</span> </h3><p id="27afab34-e8ee-8003-8e81-c00a95342d1b" class=""><strong>Sharpened Image </strong></p><ol type="1" id="27afab34-e8ee-80c3-b32e-dd1c5f0f0afe" class="numbered-list" start="1"><li>Taj Mahal </li></ol><figure id="27afab34-e8ee-8029-8b21-cab166e810e5" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.49.32_PM.png"><img style="width:2864px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.49.32_PM.png"/></a></figure><figure id="27afab34-e8ee-8096-bb59-f49e814350f2" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.51.02_PM.png"><img style="width:2858px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.51.02_PM.png"/></a></figure><figure id="27afab34-e8ee-8004-bb8b-de3ccf2e1e44" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.51.50_PM.png"><img style="width:2858px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.51.50_PM.png"/></a></figure><ol type="1" id="27afab34-e8ee-80ad-a342-f67636228739" class="numbered-list" start="2"><li>Lake in Switzerland </li></ol><figure id="27afab34-e8ee-80d7-9984-f767c725a1be" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.47.59_PM.png"><img style="width:2848px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.47.59_PM.png"/></a></figure><figure id="27afab34-e8ee-80fb-8d46-ccb8fe99167e" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.51.30_PM.png"><img style="width:2872px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.51.30_PM.png"/></a></figure><p id="27afab34-e8ee-80e9-8596-f8c20042813e" class="">
+</p><figure id="27afab34-e8ee-809d-97ac-d75f04c79857" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.52.03_PM.png"><img style="width:2848px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.52.03_PM.png"/></a></figure><p id="27afab34-e8ee-80ed-b377-c99047b9c552" class="">I noticed that increasing alpha results in a sharper image by adding more copies of the image onto itself with more prominent lines.  </p><h3 id="27afab34-e8ee-80bd-9b71-eeb675b11220" class=""><mark class="highlight-brown">2.2 Hybrid Images </mark></h3><p id="27bfab34-e8ee-80d8-94db-f1ce61cd70c1" class="">I created the below hybrid images by combining the low-frequencies of one image with the high-frequencies of another. When viewed up close, the high-frequency details dominate and vice versa.</p><h3 id="27afab34-e8ee-8081-8feb-f716c0d9d569" class=""><span style="border-bottom:0.05em solid">Hybrid Images Results</span> </h3><ol type="1" id="27afab34-e8ee-807b-b690-e0a4d3bd7e1c" class="numbered-list" start="1"><li>Derek x Nutmeg the Cat </li></ol><p id="27afab34-e8ee-809c-82d8-f5b00933d08d" class=""><strong>Cutoff Frequency: </strong><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>l</mi><mi>o</mi><mi>w</mi></mrow></msub><mo>=</mo><mn>7</mn><mo separator="true">,</mo><msub><mi>σ</mi><mrow><mi>h</mi><mi>i</mi><mi>g</mi><mi>h</mi></mrow></msub><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">\sigma_{low} = 7, \sigma_{high} = 6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.9305em;vertical-align:-0.2861em;"></span><span class="mord">7</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">hi</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">h</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span></span></span></span></span><span>﻿</span></span></p><p id="27afab34-e8ee-80c3-92ee-f85f000650f3" class="">Original Images </p><div id="27afab34-e8ee-8034-8933-e4bcccf54fd9" class="column-list"><div id="27afab34-e8ee-808b-be44-d5f8138f4033" style="width:33.333333333333336%" class="column"><p id="27afab34-e8ee-808f-b977-c48bc04a40e1" class="">Highpass </p><figure id="27afab34-e8ee-8003-80ab-ea63b31b5feb" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/7aec8764-4899-40f9-9fcb-b50b298957d9.png"><img style="width:240px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/7aec8764-4899-40f9-9fcb-b50b298957d9.png"/></a></figure></div><div id="27afab34-e8ee-803d-9cc9-d88401375b69" style="width:33.33333333333333%" class="column"><p id="27afab34-e8ee-8006-86cf-d96de6de2c80" class="">Lowpass</p><figure id="27afab34-e8ee-80bf-a85c-ccf4316d3701" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/lowpass.png"><img style="width:240px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/lowpass.png"/></a></figure></div><div id="27afab34-e8ee-80d3-b780-c9f6d0a4949f" style="width:33.333333333333336%" class="column"><p id="27afab34-e8ee-8013-a01d-eb2a972a303b" class="">Hybrid</p><figure id="27afab34-e8ee-8060-86ed-f06d917e8844" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_5.20.03_AM.png"><img style="width:240px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_5.20.03_AM.png"/></a></figure></div></div><figure id="27afab34-e8ee-80a7-a3c8-d286f2911c65" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_5.24.37_AM.png"><img style="width:2372px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_5.24.37_AM.png"/></a></figure><p id="27afab34-e8ee-8023-b0a5-f3de07614adf" class="">
+</p><ol type="1" id="27afab34-e8ee-8041-9d2b-f57b8a663151" class="numbered-list" start="2"><li>Taylor Swift x Oski the Bear </li></ol><p id="27afab34-e8ee-8027-859a-eaa819273996" class=""><strong>Cutoff Frequency: </strong><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>l</mi><mi>o</mi><mi>w</mi></mrow></msub><mo>=</mo><mn>10</mn><mo separator="true">,</mo><msub><mi>σ</mi><mrow><mi>h</mi><mi>i</mi><mi>g</mi><mi>h</mi></mrow></msub><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">\sigma_{low} = 10, \sigma_{high} = 5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.9305em;vertical-align:-0.2861em;"></span><span class="mord">10</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">hi</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">h</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">5</span></span></span></span></span><span>﻿</span></span></p><p id="27afab34-e8ee-80d8-9df6-fe20bfdf2883" class="">For the Taylor x Oski hybrid, I experimented with multiple cutoff settings before deciding on the values above. For the low-pass image of Oski, I swept σ from 6 to 12 and found that σ = 10 was optimal because smaller σ preserved too much detail and made the hybrid cluttered, while larger σ washed out Oski’s features like the fur. For the high-pass image of Taylor Swift, I tried σ between 3 and 6 and chose σ = 5, which kept her facial edges prominent without introducing haloing. I also zoomed in and out to ensure that Taylor dominates at close range while Oski appears from far away and looked at the log-magnitude Fourier spectra to confirm that the low-pass image concentrated energy in low frequencies while the high-pass image emphasized high frequencies. </p><p id="27afab34-e8ee-80ac-b85b-d6cb5e897e25" class="">Original Images </p><div id="27afab34-e8ee-8084-9697-fff0713d1222" class="column-list"><div id="27afab34-e8ee-80b4-8ded-f86da982d9c1" style="width:16.666666666666664%" class="column"><figure id="27afab34-e8ee-800b-b9ae-d811c186f6bd" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/oski-bear.png"><img style="width:192px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/oski-bear.png"/></a></figure></div><div id="27afab34-e8ee-807f-974d-fcc9cf5f55b7" style="width:25%" class="column"><figure id="27afab34-e8ee-80cd-a5df-da22da10f074" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/taylor-swift.png"><img style="width:192px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/taylor-swift.png"/></a></figure></div><div id="27afab34-e8ee-80d2-956a-f371add6959a" style="width:58.33333333333333%" class="column"><p id="27afab34-e8ee-802c-803b-cd26b718c210" class="">Checking Alignment (on eyes)</p><figure id="27bfab34-e8ee-807a-8f34-e0ceed2690f1" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_5.01.17_PM.png"><img style="width:288px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_5.01.17_PM.png"/></a></figure><p id="27bfab34-e8ee-801c-9e28-d741166c2cca" class="">
+</p></div></div><div id="27afab34-e8ee-8024-906f-d60d3576a446" class="column-list"><div id="27afab34-e8ee-803e-bb81-fb8806066d5b" style="width:33.333333333333336%" class="column"><p id="27afab34-e8ee-805e-a8b1-f3bf8edf35e8" class="">
+</p><p id="27afab34-e8ee-80a8-b0e1-d7af1acf3391" class="">Highpass <div class="indented"><figure id="27afab34-e8ee-8077-ae94-c9bec12ecb8b" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/highpass.png"><img style="width:384px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/highpass.png"/></a></figure></div></p></div><div id="27afab34-e8ee-8071-ab5a-da1b0bd69eb3" style="width:33.33333333333333%" class="column"><p id="27afab34-e8ee-80dd-add1-d8635dd30f4b" class="">
+</p><p id="27afab34-e8ee-80a9-b2cb-c9aad851aab8" class="">Lowpass </p><figure id="27afab34-e8ee-8039-9fac-d81e185a85bd" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/lowpass%201.png"><img style="width:336px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/lowpass%201.png"/></a></figure></div><div id="27afab34-e8ee-80db-90f6-ccb64356a0d2" style="width:33.333333333333336%" class="column"><p id="27afab34-e8ee-80dd-ae3a-c8ec2fef14df" class="">
+</p><p id="27afab34-e8ee-80e6-af58-fd40f56db77f" class="">Hybrid</p><figure id="27afab34-e8ee-801c-8ded-c54759a9a4c9" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/hybrid.png"><img style="width:828.9921875px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/hybrid.png"/></a></figure></div></div><p id="27afab34-e8ee-8030-93db-e869fef24d18" class="">
+</p><figure id="27afab34-e8ee-8084-83ba-ddb485eb42fd" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_5.39.34_AM.png"><img style="width:2390px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_5.39.34_AM.png"/></a></figure><ol type="1" id="27afab34-e8ee-80e6-b556-c9a8797a44dd" class="numbered-list" start="3"><li>Berkeley Campanile x Stanford Hoover Tower (when rivals align…) </li></ol><p id="27afab34-e8ee-8010-9ad2-dedd19987e36" class=""><strong>Cutoff Frequency: </strong><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>l</mi><mi>o</mi><mi>w</mi></mrow></msub><mo>=</mo><mn>10</mn><mo separator="true">,</mo><msub><mi>σ</mi><mrow><mi>h</mi><mi>i</mi><mi>g</mi><mi>h</mi></mrow></msub><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">\sigma_{low} = 10, \sigma_{high} = 5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.9305em;vertical-align:-0.2861em;"></span><span class="mord">10</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">hi</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">h</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">5</span></span></span></span></span><span>﻿</span></span></p><div id="27afab34-e8ee-8003-a4a6-f9ad658151b2" class="column-list"><div id="27afab34-e8ee-8044-9c16-e2abd1224cca" style="width:33.33333333333333%" class="column"><p id="27afab34-e8ee-809b-ab50-e6c923fe3da9" class="">Highpass </p><figure id="27afab34-e8ee-8036-9550-c6387f53e988" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/highpass%201.png"><img style="width:405.4921875px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/highpass%201.png"/></a></figure></div><div id="27afab34-e8ee-803e-bfd3-d313ead0f674" style="width:33.33333333333334%" class="column"><p id="27afab34-e8ee-8059-86d5-c014af47a03b" class="">Lowpass</p><figure id="27afab34-e8ee-8009-a432-d16f4d74864a" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/lowpass%202.png"><img style="width:384px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/lowpass%202.png"/></a></figure></div><div id="27afab34-e8ee-8052-9a7c-ede49d32df47" style="width:33.333333333333336%" class="column"><p id="27afab34-e8ee-8014-b81a-d21b6e388698" class="">Hybrid</p><figure id="27afab34-e8ee-80cf-8557-c71b23b68e04" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/hybrid%201.png"><img style="width:405.4921875px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/hybrid%201.png"/></a></figure></div></div><figure id="27afab34-e8ee-80e9-874a-e84aeaf347a8" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_5.46.04_AM.png"><img style="width:2400px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_5.46.04_AM.png"/></a></figure><p id="27afab34-e8ee-8095-a43a-e39c45b17051" class="">
+</p><h3 id="27afab34-e8ee-808d-aa76-d0a78be9ce4c" class=""><mark class="highlight-pink_background">Multiresolution Blending &amp; Oraple</mark></h3><h3 id="27afab34-e8ee-80d4-91b1-e865241e705f" class="">2.3 Gaussian &amp; Laplacian Stacks </h3><p id="27bfab34-e8ee-8093-8bb3-d877675a7093" class="">To build the Gaussian stack, I started with the original image and progressively blurred it with Gaussian filters of increasing σ, storing all levels at the same resolution (no downsampling). The Laplacian stack was then computed as the difference between consecutive Gaussian levels, with the last level being the most blurred residual. The final blended Laplacian stack was created by weighting each level of the apple and orange stacks with the corresponding mask, and I collapsed the stack by summing from the coarsest to finest levels to reconstruct the full-res “oraple”.</p><p id="27afab34-e8ee-8075-b122-f3b26e2581c4" class=""><span style="border-bottom:0.05em solid">Figure 3.42 Recreation (with masks)</span></p><p id="27bfab34-e8ee-80da-ae88-ec169c4bdf21" class="">
+</p><figure id="27bfab34-e8ee-8000-81dc-fca2637fd717" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/5a51e1bd-b7f6-4240-8614-1a43ca5c47b0.png"><img style="width:432px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/5a51e1bd-b7f6-4240-8614-1a43ca5c47b0.png"/></a></figure><figure id="27afab34-e8ee-8071-b699-f276b1122d11" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/2d0f4df6-7c58-4945-901c-f882c08cffc4.png"><img style="width:576px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/2d0f4df6-7c58-4945-901c-f882c08cffc4.png"/></a></figure><div id="27afab34-e8ee-8096-bb06-f1940e3bdd5f" class="column-list"><div id="27afab34-e8ee-80f6-9b9f-e95995758e66" style="width:50%" class="column"><p id="27afab34-e8ee-80d3-86b8-f56cfe85814a" class="">
+</p><p id="27afab34-e8ee-80af-8d5a-cf07446a3393" class="">
+</p></div><div id="27afab34-e8ee-8050-893f-ffa9222ba0c7" style="width:50%" class="column"><p id="27afab34-e8ee-80ee-9686-c8c61d39fb38" class="">
+</p></div></div><p id="27afab34-e8ee-8076-aa6e-f2fda9419134" class=""><span style="border-bottom:0.05em solid">Gaussian &amp; Laplacian Stacks </span></p><figure id="27afab34-e8ee-8047-8c06-dcbdca94a26b" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_12.06.48_PM.png"><img style="width:864px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_12.06.48_PM.png"/></a></figure><figure id="27afab34-e8ee-8085-af0a-e4ec243d60e0" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_12.06.58_PM.png"><img style="width:864px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_12.06.58_PM.png"/></a></figure><figure id="27afab34-e8ee-80fe-941d-e3a13061947b" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_12.07.08_PM.png"><img style="width:864px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_12.07.08_PM.png"/></a></figure><figure id="27afab34-e8ee-8003-b25c-ef49e7f0b1c5" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_12.07.19_PM.png"><img style="width:864px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_12.07.19_PM.png"/></a></figure><p id="27afab34-e8ee-80d4-b664-d19b0e8f6120" class="">
+</p><h3 id="27afab34-e8ee-8062-8bf4-e8aee1c3fb35" class="">2.4 Multiresolution Blending </h3><p id="27afab34-e8ee-80f3-803b-cdbd89d2c4df" class="">For multiresolution blending, I used the Gaussian and Laplacian stacks from Part 2.3 along with a Gaussian stack of a binary mask to combine two images at diff frequency bands. At each level, I multiplied image1 and image2 Laplacians by the corresponding blurred mask and its complement, summed them to get a blended Laplacian level, and then collapsed (reconstructed) the blended Laplacian stack from coarse to fine. I first tested this on the oraple with vertical step mask and then built some irregular masks for Anne Hathaway/Miranda Priestly, Spiderverse Portal, and Remy’s Cooking Ghost.</p><ol type="1" id="27afab34-e8ee-802a-938d-f9ba6bf0b5c9" class="numbered-list" start="1"><li><strong>Vertical Mask: The Oraple </strong><figure id="27afab34-e8ee-806c-8d5e-e97caf6ae246" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/2978cf09-4ce5-4f10-ad92-a331cdbde357.png"><img style="width:405.8874458874459px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/2978cf09-4ce5-4f10-ad92-a331cdbde357.png"/></a></figure></li></ol><p id="27afab34-e8ee-807d-8d8e-f9181dd6cb2b" class="">
+</p><p id="27afab34-e8ee-8002-8406-d6de26324a90" class="">
+</p><ol type="1" id="27afab34-e8ee-808c-ac11-dd24d1c2b7cf" class="numbered-list" start="2"><li><strong>Vertical Mask: Andrea Priestly (Andrea Sachs &amp; Miranda Priestly) from the </strong><em><strong>Devil Wears Prada </strong></em><strong>👠</strong></li></ol><div id="27afab34-e8ee-80c5-8ce3-c45359b16ad7" class="column-list"><div id="27afab34-e8ee-80e8-b597-c78d92f134dc" style="width:43.75%" class="column"><p id="27afab34-e8ee-8020-b806-c77a0d3e8929" class="">Blended</p><figure id="27afab34-e8ee-8006-b4ee-ffe45ed117c6" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/042a1672-4a1c-4212-bd21-98009a4995c1.png"><img style="width:336px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/042a1672-4a1c-4212-bd21-98009a4995c1.png"/></a></figure></div><div id="27afab34-e8ee-8060-a765-cee6db268447" style="width:56.25%" class="column"><p id="27afab34-e8ee-80ed-b7e1-dfc7adf94ce5" class="">Originals</p><figure id="27afab34-e8ee-80b8-a4cd-f3f8585abff5" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/anne_hathaway_2.png"><img style="width:144px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/anne_hathaway_2.png"/></a></figure><figure id="27afab34-e8ee-80bf-a409-ec2577a334f0" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.33.12_AM.png"><img style="width:144px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.33.12_AM.png"/></a></figure></div></div><p id="27afab34-e8ee-8060-a2fb-d90ead465762" class="">
+</p><p id="27afab34-e8ee-80da-95b7-fdd84ab84281" class="">
+</p><ol type="1" id="27afab34-e8ee-801a-a733-d6e9406e809d" class="numbered-list" start="3"><li><strong>Irregular Mask: Spiderverse Portal Opens in Times Square 🗽</strong></li></ol><div id="27afab34-e8ee-809d-8248-d592bae5d3ab" class="column-list"><div id="27afab34-e8ee-80f5-a96e-c5a4547d7bed" style="width:50%" class="column"><p id="27afab34-e8ee-808d-b2f4-dbd9e95f2b53" class="">Blended </p><figure id="27afab34-e8ee-8064-80b2-d1ed482b368c" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/portal_times_square_blended_nopyr.png"><img style="width:432px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/portal_times_square_blended_nopyr.png"/></a></figure></div><div id="27afab34-e8ee-80fa-8974-e812f8f4949e" style="width:49.99999999999999%" class="column"><p id="27afab34-e8ee-808c-a80c-ff3f0407f78c" class="">Originals</p><figure id="27afab34-e8ee-80e4-b648-d13686b7724b" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/spiderverseportal.png"><img style="width:144px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/spiderverseportal.png"/></a></figure><figure id="27afab34-e8ee-80b8-8470-f0cfaadd4ed8" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/times_square.jpg"><img style="width:192px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/times_square.jpg"/></a></figure></div></div><p id="27afab34-e8ee-8062-bd1c-d7743b0ca1bc" class=""> I created the following Irregular Mask Shape</p><p id="27afab34-e8ee-807e-8ab2-d43d6bd6b30e" class="">
+</p><div id="27bfab34-e8ee-801c-b04a-e4be1c56f674" class="column-list"><div id="27bfab34-e8ee-808d-8530-f54b68470717" style="width:37.5%" class="column"><figure id="27afab34-e8ee-802d-94f3-eeed83da7afc" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/aa65b1bd-92ac-4738-ac9c-ed0b23c2c51a.png"><img style="width:432px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/aa65b1bd-92ac-4738-ac9c-ed0b23c2c51a.png"/></a></figure></div><div id="27bfab34-e8ee-806c-94a2-e8dc87fe5db9" style="width:62.5%" class="column"><figure id="27afab34-e8ee-805c-b038-c9d13a85ce77" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.51.23_AM.png"><img style="width:2856px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_4.51.23_AM.png"/></a></figure><p id="27bfab34-e8ee-8046-aae8-f8f27d15063a" class="">
+</p></div></div><ol type="1" id="27afab34-e8ee-805a-b3fd-c758e390e90b" class="numbered-list" start="4"><li><strong>Irregular Mask: Remy’s ghost teaches a chef to cook </strong></li></ol><p id="27afab34-e8ee-8043-92df-e7a66ce5e656" class="">Blended</p><div id="27afab34-e8ee-8035-9477-c70037bd6a8b" class="column-list"><div id="27afab34-e8ee-8083-b408-c26284108628" style="width:43.75%" class="column"><figure id="27afab34-e8ee-80a4-93f2-e06264253a33" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/ratatouille_on_hat.png"><img style="width:384px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/ratatouille_on_hat.png"/></a></figure><p id="27afab34-e8ee-8014-b2de-fcc4e83a7b4b" class="">
+</p></div><div id="27afab34-e8ee-8019-b883-fa24a3637ec2" style="width:56.25%" class="column"><p id="27afab34-e8ee-8049-9c21-d982345e9a95" class="">Originals</p><figure id="27afab34-e8ee-80d0-b10c-f5dd54cf0d8c" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/chef.png"><img style="width:144px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/chef.png"/></a></figure><figure id="27afab34-e8ee-80a9-84da-dc4ee58c106e" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/ratatouille.png"><img style="width:144px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/ratatouille.png"/></a></figure></div></div><div id="27afab34-e8ee-807b-ba3d-d67f30ff3325" class="column-list"><div id="27afab34-e8ee-8087-bed1-cc956fc69ed5" style="width:50%" class="column"><p id="27afab34-e8ee-80e7-a81e-ee0a324dc545" class="">I created the following Irregular Mask Shape </p><figure id="27afab34-e8ee-8028-a17e-fac03301bcf4" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_6.44.04_AM.png"><img style="width:384px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_6.44.04_AM.png"/></a></figure></div><div id="27afab34-e8ee-80ad-9033-c575dc202323" style="width:50%" class="column"><figure id="27afab34-e8ee-80fc-8e21-e1dc2d108e71" class="image"><a href="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_6.44.26_AM.png"><img style="width:384px" src="Project%202%20-%20Fun%20with%20Filters%20&amp;%20Frequencies%2027afab34e8ee800788a0d2e4c63443ae/Screenshot_2025-09-26_at_6.44.26_AM.png"/></a></figure></div></div><p id="27afab34-e8ee-80f2-ac5a-d0019e849c90" class="">
+</p><h2 id="27afab34-e8ee-8035-a374-e69b8c5bf4ff" class=""><mark class="highlight-brown_background">What I learned from this project </mark></h2><p id="27afab34-e8ee-809c-ac0f-ce0ee7d6ad73" class="">I learned to create convolution and edge detection operations and utilize filters and frequencies for manipulating images in fun ways such as hybridization, sharpening, masking, and blending.</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
