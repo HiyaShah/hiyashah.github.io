@@ -1,0 +1,755 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Project 4 - Neural Radiance Field</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="2a6fab34-e8ee-8010-a609-f817774cf992" class="page serif"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/woodcuts_sekka_2.jpg" style="object-position:center 30.820000000000004%"/><h1 class="page-title">Project 4 - Neural Radiance Field</h1><p class="page-description"></p></header><div class="page-body"><p id="2acfab34-e8ee-80c5-b2ae-ee581fe786ab" class="">by Hiya Shah </p><h3 id="2acfab34-e8ee-80cf-b219-db6fb0b73f98" class=""><strong>Objective</strong></h3><p id="2acfab34-e8ee-80ed-8425-f43bb98b9e58" class="">In this project, I built the pipeline of a Neural Radiance Field (NeRF). I achieved this by first capturing images of objects and estimating the camera intrinsics and extrinsics by calibrating with Aruco tags, then building a 2D neural field to understand the positional encoding and neural signal representation. Finally, I extended this to 3D by generating rays, sampling points, performing volume rendering, and building and training an MLP to reconstruct a 3D scene from multiview images both on the provided Lego dataset and on my own images. </p><h3 id="2acfab34-e8ee-8057-aca5-dc733b01d05d" class="">Part 0 - Camera Calibration and 3d Scanning </h3><p id="2acfab34-e8ee-809c-9e0f-e807bf05ce58" class=""><mark class="highlight-pink_background">0.1 - Calibrating the Camera</mark> - Intrinsic parameters (K) such as principal point and focal length and distortion coefficients</p><p id="2acfab34-e8ee-801f-b50f-f312f7fe676c" class="">I took ~60 pictures of Aruco tags from different angles while keeping constant zoom, parsed the Aruco tag board layout, using the known tag size 0.60mm, horizontal spacing of 90mm, and vertically spacing of 75.67mm to assign each marker an offset, assuming that the tag 0 is the origin. I downsampled the frame to one-eighth resolution (part 2.6 training was very slow otherwise), detected ArUco markers via OpenCV Aruco detector, filtered to tag ID 0 so that it is the assumed world origin, established the correspondences between the detected 2D corners and 3D world coordinates that were known, and used cv2.calibrateCamera() to calculate K and distortion coefficients, which I saved. I skipped the cases where the tag was not detected successfully. I sanity checked with RMS reprojection error, achieving ~0.3px with image sizes (378, 504). </p><p id="2acfab34-e8ee-8056-98a6-d3bd310e2a33" class=""><mark class="highlight-pink_background">0.2 - Capturing 3D Object Scan</mark></p><p id="2acfab34-e8ee-801b-bb27-e6a13fd1cf6e" class="">I took ~70 images of a sunglasses case next to the top left Aruco tag with the same camera I used in the previous part 0.1 at different angles while circling the object. </p><div id="2acfab34-e8ee-80c5-9d50-d7d77fa23c45" class="column-list"><div id="2acfab34-e8ee-8048-9298-e58a4c643eb9" style="width:25%" class="column"><figure id="2acfab34-e8ee-807a-863d-e182967cb469" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/IMG_8652.jpg"><img style="width:240px" src="Project%204%20-%20Neural%20Radiance%20Field/IMG_8652.jpg"/></a></figure></div><div id="2acfab34-e8ee-8040-a686-d3a0e6dc6762" style="width:25%" class="column"><figure id="2acfab34-e8ee-80c9-bfe2-e25b517eb2fe" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/IMG_8651.jpg"><img style="width:240px" src="Project%204%20-%20Neural%20Radiance%20Field/IMG_8651.jpg"/></a></figure></div><div id="2acfab34-e8ee-8073-8f5d-d5658763a2a6" style="width:25%" class="column"><figure id="2acfab34-e8ee-8074-ba27-fd4d08e10803" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/IMG_8640.jpg"><img style="width:3024px" src="Project%204%20-%20Neural%20Radiance%20Field/IMG_8640.jpg"/></a></figure></div><div id="2acfab34-e8ee-8018-8799-ee200389c6ae" style="width:25%" class="column"><figure id="2acfab34-e8ee-800a-a92e-f8faeb18fe66" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/IMG_8632.jpg"><img style="width:3024px" src="Project%204%20-%20Neural%20Radiance%20Field/IMG_8632.jpg"/></a></figure></div></div><p id="2acfab34-e8ee-8050-9805-dbf13b106dc3" class=""><mark class="highlight-pink_background">0.3 - Estimating Camera Pose </mark></p><p id="2acfab34-e8ee-803b-9333-f991ff259892" class="">I loaded in the calibrated intrinsics K and distortion coefficients from Part 0.1, I estimated the camera extrinsics aka pose by solving the PnP (Perspective-n-Point) problem utilizing cv2.solvePnP() for each detected aruco tag in the object-scan images. I also transformed w2c (R,t) to c2w for each image I processed for NeRF training later on. I then visualized the poses using Viser by drawing frustum at each camera position with the corresponding image texture and verified that the camera cloud formed an arc shape around the object. </p><p id="2acfab34-e8ee-8073-b346-f5b0dec4d90b" class=""><span style="border-bottom:0.05em solid">Camera Frustum Viser Screenshorts</span></p><p id="2acfab34-e8ee-80b0-a2f3-ddee6415df47" class=""><strong>Sunglasses Case Object </strong></p><div id="2acfab34-e8ee-80bd-837b-e499084d90c3" class="column-list"><div id="2acfab34-e8ee-8091-b06d-ff698c0c1578" style="width:33.333333333333336%" class="column"><figure id="2acfab34-e8ee-80cd-aeb2-c7ad99ab6b57" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-14_at_3.47.25_PM.png"><img style="width:645.9921875px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-14_at_3.47.25_PM.png"/></a></figure><p id="2acfab34-e8ee-80b4-80d0-e8b411eb8dd0" class="">
+</p></div><div id="2acfab34-e8ee-80b4-80bb-daf9851cfbcb" style="width:33.333333333333336%" class="column"><figure id="2acfab34-e8ee-80f0-9d77-cf8c475ae8b6" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-14_at_3.47.38_PM.png"><img style="width:1012.9921875px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-14_at_3.47.38_PM.png"/></a></figure></div><div id="2acfab34-e8ee-80d1-b13c-c94f2703edbf" style="width:33.33333333333333%" class="column"><figure id="2acfab34-e8ee-80d4-abe0-c9f06b6983ad" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-14_at_3.47.33_PM.png"><img style="width:1332px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-14_at_3.47.33_PM.png"/></a></figure></div></div><p id="2acfab34-e8ee-804d-8e9f-c89934f0dc63" class=""><strong>Turtle Object </strong></p><div id="2acfab34-e8ee-8019-8d2b-d66a5ed90781" class="column-list"><div id="2acfab34-e8ee-8097-a4df-d74a04a01430" style="width:33.333333333333336%" class="column"><figure id="2a9fab34-e8ee-806e-a707-fc6a63ecc4e4" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_2.01.26_PM.png"><img style="width:480px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_2.01.26_PM.png"/></a></figure></div><div id="2acfab34-e8ee-8089-bac9-eafb01700920" style="width:33.33333333333333%" class="column"><figure id="2a9fab34-e8ee-8069-a990-c15405c2089f" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_2.02.23_PM.png"><img style="width:455px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_2.02.23_PM.png"/></a></figure></div><div id="2acfab34-e8ee-80f2-a90e-d464e943fc46" style="width:33.33333333333334%" class="column"><figure id="2a9fab34-e8ee-806f-aea8-dfb293772fc7" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_2.02.45_PM.png"><img style="width:750.6666870117188px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_2.02.45_PM.png"/></a></figure></div></div><p id="2acfab34-e8ee-8032-a502-f360ce157b60" class="">
+</p><p id="2acfab34-e8ee-807e-992e-d60eabee8cd9" class="">Sanity Check (lafufu)</p><div id="2acfab34-e8ee-80d0-96f9-f8a8a8439556" class="column-list"><div id="2acfab34-e8ee-8080-9ad0-d418334b141c" style="width:33.333333333333336%" class="column"><figure id="2a9fab34-e8ee-8050-9c85-edfb763895ff" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_10.44.27_AM.png"><img style="width:455px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_10.44.27_AM.png"/></a></figure></div><div id="2acfab34-e8ee-804e-bbec-eee5dc7f47fe" style="width:33.333333333333336%" class="column"><figure id="2a9fab34-e8ee-8064-b7a4-d4ad1b72f439" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_10.44.45_AM.png"><img style="width:454.9921875px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_10.44.45_AM.png"/></a></figure></div><div id="2acfab34-e8ee-8073-8e66-e2b7327bf6af" style="width:33.33333333333333%" class="column"><figure id="2a9fab34-e8ee-80ce-8f19-cdf917b27614" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_10.42.10_AM.png"><img style="width:528px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_10.42.10_AM.png"/></a></figure></div></div><p id="2acfab34-e8ee-8026-aa7c-e50e21e9a219" class=""><mark class="highlight-pink_background">0.4 - Undistorting Images + Creating a Dataset </mark></p><p id="2acfab34-e8ee-80ae-b624-dcffeb9257b5" class="">I undistorted my images using cv2.undistort() (although I found that the iPhone camera images did not have much lens distortion to begin with) and saved the dataset with the NPZ format with train images, c2w train transformation matrices, validation images,  c2w validation transformation matrices, c2w test camera poses, and focal length of the camera. </p><p id="2acfab34-e8ee-8097-b1d3-c769708465cf" class="">
+</p><h3 id="2acfab34-e8ee-800c-93cd-f568694939c4" class="">Part 1: Fit a Neural Radiance Field from Multi-view Images</h3><p id="2acfab34-e8ee-80ca-939e-d8350ee411d9" class="">In this part, I implemented 2D neural field that learns to reconstruct a 2D image by mapping pixel coordinates to RGB values using an MLP. To do this, I encoded each input coordinate (u,v) using sinusoidal positional encoding to capture high-frequency details, and I trained the network with randomly sampled pixels to predict their colors. The model optimizes mean squared error between predicted and ground-truth pixels using the Adam optimizer, with performance tracked via PSNR over training iterations.</p><p id="2acfab34-e8ee-80e3-8547-f7dbeaa0fec5" class=""><mark class="highlight-yellow_background">1 - Model Architecture/Training Details </mark></p><p id="2acfab34-e8ee-806d-859e-d0c2ca47ab81" class="">The network consists of 4 fully connected layers with 256 hidden units each, using ReLU activations for hidden layers and a Sigmoid output layer to constrain RGB values to [0,1]. As input, the model takes in 2D pixel coordinates that are normalized to range [0,1], and these are passed through a sinusoidal position encoding function. The sinusoidal positional encoding uses max frequency L=10, expanding each 2D input into a 42-dimensional vector, and it helps the network learn the finer grained details. The encoded inputs are processed by the MLP, whose input layer maps 42 to 256 features, followed by 4 hidden layers of 256 units each using ReLU activations. The final output layer maps 256 features to 3 RGB color vals, using Sigmoid to constrain to [0,1] as mentioned earlier. The model is trained on randomly sampled pixels with MSE loss using the Adam optimizer with a learning rate of 1 × 10⁻², batch size = 10,000, and training iterations = 2000.</p><p id="2acfab34-e8ee-8047-a950-e5a83b984744" class=""><mark class="highlight-yellow_background">2 - Training Progress (Test Image) </mark></p><p id="2acfab34-e8ee-804c-955e-c62c009cd3e5" class="">Network Width: 256; Max Frequency: L = 10 </p><p id="2acfab34-e8ee-8067-a6c7-c584b4156d4f" class="">Iterations (1, 50, 100, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000)</p><div id="2acfab34-e8ee-80ec-a2cc-db9f13cedf2e" class="column-list"><div id="2acfab34-e8ee-80e6-9541-da4a56672288" style="width:14.285714285714288%" class="column"><figure id="2acfab34-e8ee-8089-bda0-e44d79a4b744" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image.png"><img style="width:1174px" src="Project%204%20-%20Neural%20Radiance%20Field/image.png"/></a></figure></div><div id="2acfab34-e8ee-8088-b846-c75882da8184" style="width:14.285714285714285%" class="column"><figure id="2acfab34-e8ee-8008-8ca2-d86100e0c40e" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%201.png"><img style="width:1174px" src="Project%204%20-%20Neural%20Radiance%20Field/image%201.png"/></a></figure></div><div id="2acfab34-e8ee-8015-9972-f4aef1742f10" style="width:14.285714285714285%" class="column"><figure id="2acfab34-e8ee-807a-b948-d5d06588414b" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%202.png"><img style="width:1174px" src="Project%204%20-%20Neural%20Radiance%20Field/image%202.png"/></a></figure></div><div id="2acfab34-e8ee-8090-b940-ee9f674774f2" style="width:14.285714285714288%" class="column"><figure id="2acfab34-e8ee-8068-b3a9-ed68e0b13b77" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%203.png"><img style="width:240px" src="Project%204%20-%20Neural%20Radiance%20Field/image%203.png"/></a></figure></div><div id="2acfab34-e8ee-8048-b1d8-cdc6739abf22" style="width:14.285714285714288%" class="column"><figure id="2acfab34-e8ee-8014-b75b-f53abe627629" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%204.png"><img style="width:938px" src="Project%204%20-%20Neural%20Radiance%20Field/image%204.png"/></a></figure></div><div id="2acfab34-e8ee-8081-938c-c6cf9ce20aaf" style="width:14.285714285714288%" class="column"><figure id="2acfab34-e8ee-801a-9dbe-f7d1106078cd" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%205.png"><img style="width:281.33331298828125px" src="Project%204%20-%20Neural%20Radiance%20Field/image%205.png"/></a></figure></div><div id="2acfab34-e8ee-80c0-8d90-d279a734e552" style="width:14.285714285714288%" class="column"><figure id="2acfab34-e8ee-800a-b2e0-c4137cc1c783" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%206.png"><img style="width:277.484375px" src="Project%204%20-%20Neural%20Radiance%20Field/image%206.png"/></a></figure></div></div><div id="2acfab34-e8ee-80b6-bf40-dd49cae947e9" class="column-list"><div id="2acfab34-e8ee-8077-bec8-d8f30b755b5c" style="width:20%" class="column"><figure id="2acfab34-e8ee-80a7-ab5a-e0d30f8b2202" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%207.png"><img style="width:938px" src="Project%204%20-%20Neural%20Radiance%20Field/image%207.png"/></a></figure><p id="2acfab34-e8ee-80aa-8762-f675cb230d18" class="">
+</p><p id="2acfab34-e8ee-80cb-b75b-c990b3b019ac" class="">Final (2000 iterations)</p><figure id="0b107557-2f8e-4a88-8bca-a247379482a4" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%208.png"><img style="width:212.796875px" src="Project%204%20-%20Neural%20Radiance%20Field/image%208.png"/></a></figure></div><div id="2acfab34-e8ee-80a6-b063-c83b87a646ac" style="width:20%" class="column"><figure id="1144ac68-6531-4721-b2bf-9c5f97f4b77e" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%209.png"><img style="width:445px" src="Project%204%20-%20Neural%20Radiance%20Field/image%209.png"/></a></figure><p id="2acfab34-e8ee-80bd-a0e4-ec86cf43304d" class="">
+</p></div><div id="2acfab34-e8ee-80cc-9d10-c424af484990" style="width:20%" class="column"><figure id="dfcd0083-cd84-40bb-8bab-0757759dd121" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2010.png"><img style="width:281.33331298828125px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2010.png"/></a></figure><p id="80b9d884-6bef-4abd-8c33-93c0fe5ecdc0" class="">
+</p></div><div id="2acfab34-e8ee-80a7-9997-f5362996559f" style="width:20%" class="column"><figure id="b7ceed5f-4582-4822-8f46-a4beca756eac" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2011.png"><img style="width:938px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2011.png"/></a></figure></div><div id="2acfab34-e8ee-8028-bc30-f3d8821a9b94" style="width:20%" class="column"><figure id="0f835f22-ac5b-4ee3-b0c3-6afcf2bb855a" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2012.png"><img style="width:938px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2012.png"/></a></figure></div></div><p id="2acfab34-e8ee-8093-8921-cd0cdc4abb0e" class=""><mark class="highlight-yellow_background">2 - Training Progress (my image - Hammerhead Shark Plushie)</mark></p><p id="2acfab34-e8ee-8057-88d2-f1f788601d1a" class="">Network Width: 256; Max Frequency: L = 10 </p><p id="2acfab34-e8ee-8094-ad43-eb2224bcfe5e" class="">Iterations (1, 100, 200, 300, 400, 500, 600, 900, 1000, 1200, 1400, 1600, 1800 respectively)</p><p id="2acfab34-e8ee-804f-84f0-fd109b00209c" class="">Original image </p><figure id="2acfab34-e8ee-8015-b974-d349cab07447" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-14_at_10.16.22_PM.png"><img style="width:336px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-14_at_10.16.22_PM.png"/></a></figure><p id="2acfab34-e8ee-800d-83bc-ef691b2f2c26" class="">
+</p><div id="2acfab34-e8ee-8062-a274-dd57845eb2f3" class="column-list"><div id="2acfab34-e8ee-80cd-88e4-c09d3035ce6d" style="width:20.000000000000007%" class="column"><figure id="2acfab34-e8ee-8061-8b67-cd1c764fc1c2" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2013.png"><img style="width:192px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2013.png"/></a></figure></div><div id="2acfab34-e8ee-80e4-b08e-d8ad12ab8da1" style="width:20%" class="column"><figure id="2acfab34-e8ee-80f0-a69b-da5c728a627f" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2014.png"><img style="width:192px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2014.png"/></a></figure><p id="2acfab34-e8ee-8095-bec4-f08dea993692" class="">
+</p></div><div id="2acfab34-e8ee-8063-8103-faf172fb3354" style="width:20%" class="column"><figure id="2acfab34-e8ee-808f-b808-cb3437756433" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2015.png"><img style="width:4032px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2015.png"/></a></figure></div><div id="2acfab34-e8ee-8061-920b-d6d5580161be" style="width:20%" class="column"><figure id="2acfab34-e8ee-809c-bc8c-f6a818212c85" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2016.png"><img style="width:4032px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2016.png"/></a></figure></div><div id="2acfab34-e8ee-8091-83a0-e86364f774a4" style="width:20%" class="column"><figure id="2acfab34-e8ee-8014-a7aa-e86aa7cd605d" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2017.png"><img style="width:4032px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2017.png"/></a></figure></div></div><div id="2acfab34-e8ee-8006-84e9-f0b33694e136" class="column-list"><div id="2acfab34-e8ee-806a-943d-cdf5faa15a7b" style="width:25%" class="column"><figure id="2acfab34-e8ee-8073-8819-eb30b80f4798" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2018.png"><img style="width:240px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2018.png"/></a></figure><p id="2acfab34-e8ee-8094-8d7f-d842f4a9c751" class="">
+</p></div><div id="2acfab34-e8ee-8092-b1f0-c174bdc2ade6" style="width:25%" class="column"><figure id="2acfab34-e8ee-80ac-827f-f8fd740c058b" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2019.png"><img style="width:4032px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2019.png"/></a></figure><p id="2acfab34-e8ee-80c9-b85a-d2b10c505fb8" class="">
+</p></div><div id="2acfab34-e8ee-80e4-b6ac-c5f867583ce3" style="width:25%" class="column"><figure id="2acfab34-e8ee-80ca-b18f-e85b4c303292" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2020.png"><img style="width:4032px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2020.png"/></a></figure></div><div id="2acfab34-e8ee-801c-93b3-dfe7e8054647" style="width:25%" class="column"><figure id="2acfab34-e8ee-8097-9593-c8352f8ef850" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2021.png"><img style="width:4032px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2021.png"/></a></figure></div></div><div id="2acfab34-e8ee-803b-80d6-ef5011a4eb96" class="column-list"><div id="2acfab34-e8ee-807c-9c7d-cbbd024b0b98" style="width:25.000000000000007%" class="column"><figure id="2acfab34-e8ee-8045-b111-cdfdc05bc6a1" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2022.png"><img style="width:288px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2022.png"/></a></figure></div><div id="2acfab34-e8ee-8073-85bb-ddb5187d9523" style="width:25%" class="column"><figure id="2acfab34-e8ee-807b-9382-e9c01fc711c2" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2023.png"><img style="width:288px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2023.png"/></a></figure></div><div id="2acfab34-e8ee-8074-8dd0-de32c7808f75" style="width:25%" class="column"><figure id="2acfab34-e8ee-804f-8c2a-e64b6c816b06" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2024.png"><img style="width:288px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2024.png"/></a></figure></div><div id="2acfab34-e8ee-8029-8372-d915e8de639d" style="width:25%" class="column"><figure id="2acfab34-e8ee-80dd-ac77-d3acfae28995" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2025.png"><img style="width:4032px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2025.png"/></a></figure></div></div><p id="2acfab34-e8ee-8055-b41a-d54fd8de5142" class="">Final (2000 iterations)</p><figure id="2acfab34-e8ee-808b-948e-cf6e09ee4447" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2026.png"><img style="width:288px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2026.png"/></a></figure><p id="2acfab34-e8ee-806e-9056-cabba4a8c624" class="">
+</p><p id="2acfab34-e8ee-80c5-b4f6-ebd1bafb8ea4" class=""><mark class="highlight-yellow_background">3- Varying Hyperparameters </mark></p><p id="2acfab34-e8ee-8045-8e2c-ff1872f5d09c" class="">I varied both the max position encoding frequency L and network layer width (channel size). I noticed that with a low frequency setting (L=4), the model only captured broad color gradients, resulting in blurry and overly smooth images that lacked sharp edges and fine textures. Using a high frequency setting (L=10) allowed the model to capture rapid spatial variations, producing sharper, more detailed, and realistic results. Likewise, a narrow network (width=64) had limited capacity and generated smoother images with less texture, while a wider network (width=256) was able to learn complex patterns and fine details more effectively, especially when paired with the high-frequency encoding.</p><p id="2acfab34-e8ee-80bd-a903-ce556cc65c40" class="">The images below are labeled by format L{max position encoding frequency}_W{width}.</p><p id="2acfab34-e8ee-8049-851e-eeaf8692b14e" class=""><em>Fox</em> </p><figure id="2acfab34-e8ee-8001-b32b-fe2e2181aebe" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2027.png"><img style="width:528px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2027.png"/></a></figure><p id="2acfab34-e8ee-80bc-b72a-cbee0849a668" class="">
+</p><p id="2acfab34-e8ee-8087-90ab-d43818a2a5af" class=""><em>Hammerhead Shark Plushie </em></p><p id="2acfab34-e8ee-80df-becc-f16c20b441ef" class="">
+</p><figure id="2acfab34-e8ee-8057-9a44-e61f17e63761" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2028.png"><img style="width:528px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2028.png"/></a></figure><p id="2acfab34-e8ee-80d1-8523-e039f0b54656" class="">
+</p><p id="2acfab34-e8ee-8033-a382-ff0c651028b9" class=""><mark class="highlight-yellow_background">4 - PSNR (Training) Curve </mark></p><p id="2acfab34-e8ee-8013-9fc3-c7a6c10f3467" class="">I measured the reconstruction quality using Peak Signal-to-Noise Ratio, which I computed for normalized images by <style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>S</mi><mi>N</mi><mi>R</mi><mo>=</mo><mn>10</mn><mo>⋅</mo><msub><mrow><mi>log</mi><mo>⁡</mo></mrow><mn>10</mn></msub><mtext> ⁣</mtext><mrow><mo fence="true">(</mo><mfrac><mn>1</mn><mrow><mi>M</mi><mi>S</mi><mi>E</mi></mrow></mfrac><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">PSNR = 10 \cdot \log_{10}\!\left(\frac{1}{MSE}\right)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">PSNR</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">10</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.2em;vertical-align:-0.35em;"></span><span class="mop"><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.207em;"><span style="top:-2.4559em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">10</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2441em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">(</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">MSE</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">)</span></span></span></span></span></span></span><span>﻿</span></span></p><p id="2acfab34-e8ee-80be-8941-c26b955eb546" class="">
+</p><p id="2acfab34-e8ee-8053-a03a-ca4509f08342" class="">Fox Image PSNR Training Curve </p><figure id="2acfab34-e8ee-80d1-97aa-ede27fef568c" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2029.png"><img style="width:528px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2029.png"/></a></figure><p id="2acfab34-e8ee-8087-8ff2-e6883955f08a" class="">Hammerhead Shark PSNR Training Curve </p><figure id="2acfab34-e8ee-802b-8b11-f06333f5b8a3" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2030.png"><img style="width:528px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2030.png"/></a></figure><p id="2acfab34-e8ee-80ea-a90c-e0793a56605b" class="">
+</p><h3 id="2acfab34-e8ee-8090-bf02-db032cffbc44" class="">Part 2: Fit a Neural Radiance Field from Multi-view Images</h3><p id="2acfab34-e8ee-80ee-ac9b-cd551eab7829" class="">I extended the 2D neural field from Part 1 to 3D, particularly creating a NeRF to represent my 3D scene (lego, lafufu, and my object, the sunglasses case) from the multiview images. </p><p id="2acfab34-e8ee-80f0-ba90-d322bb5b9eb5" class="">
+</p><p id="2acfab34-e8ee-808c-a961-d187f200c292" class=""><mark class="highlight-pink_background">2.1 - Create Rays from Cameras </mark></p><p id="2acfab34-e8ee-8030-b893-d222e3ab7ffc" class="">Please note that for each, I extended the implementation to support the batched coordinates as well. </p><ol type="1" id="2acfab34-e8ee-807c-b4c3-f373a6faaf62" class="numbered-list" start="1"><li>Camera to World Coordinate Conversion - I implemented <code>transform(c2w, x_c)</code>, which converted the points from the camera to the world space utilizing the provided equation in homogenous coordinates where <style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold">R</mi><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow></msub></mrow><annotation encoding="application/x-tex">\mathbf{R}_{3\times 3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8944em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathbf">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mbin mtight">×</span><span class="mord mtight">3</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span> is the rotation matrix, and <strong>t </strong>is the translation vector. I also implemented support for a batched coordinate transformation. </li></ol><figure id="2acfab34-e8ee-8033-9948-fc2bfde3e3bd" class="equation"><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mrow><mo fence="true">[</mo><mtable rowspacing="0.16em" columnalign="center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>x</mi><mi>c</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>y</mi><mi>c</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>z</mi><mi>c</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><mo>=</mo><mrow><mo fence="true">[</mo><mtable rowspacing="0.16em" columnalign="center center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi mathvariant="bold">R</mi><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mi mathvariant="bold">t</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mn mathvariant="bold">0</mn><mrow><mn>1</mn><mo>×</mo><mn>3</mn></mrow></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><mrow><mo fence="true">[</mo><mtable rowspacing="0.16em" columnalign="center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>x</mi><mi>w</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>y</mi><mi>w</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>z</mi><mi>w</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{bmatrix}x_c \\y_c \\z_c \\1\end{bmatrix}=\begin{bmatrix}\mathbf{R}_{3\times 3} &amp; \mathbf{t} \\\mathbf{0}_{1\times 3} &amp; 1\end{bmatrix}\begin{bmatrix}x_w \\y_w \\z_w \\1\end{bmatrix}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:4.8em;vertical-align:-2.15em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.65em;"><span class="pstrut" style="height:6.8em;"></span><span style="width:0.667em;height:4.800em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.667em" height="4.800em" viewBox="0 0 667 4800"><path d="M403 1759 V84 H666 V0 H319 V1759 v1200 v1759 h347 v-84
+H403z M403 1759 V0 H319 V1759 v1200 v1759 h84z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.044em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.65em;"><span class="pstrut" style="height:6.8em;"></span><span style="width:0.667em;height:4.800em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.667em" height="4.800em" viewBox="0 0 667 4800"><path d="M347 1759 V0 H0 V84 H263 V1759 v1200 v1759 H0 v84 H347z
+M347 1759 V0 H263 V1759 v1200 v1759 h84z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:4.8em;vertical-align:-2.15em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size3">[</span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.45em;"><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathbf">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mbin mtight">×</span><span class="mord mtight">3</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathbf">0</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mbin mtight">×</span><span class="mord mtight">3</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.95em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.45em;"><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathbf">t</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.95em;"><span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">]</span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.65em;"><span class="pstrut" style="height:6.8em;"></span><span style="width:0.667em;height:4.800em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.667em" height="4.800em" viewBox="0 0 667 4800"><path d="M403 1759 V84 H666 V0 H319 V1759 v1200 v1759 h347 v-84
+H403z M403 1759 V0 H319 V1759 v1200 v1759 h84z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.044em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.65em;"><span class="pstrut" style="height:6.8em;"></span><span style="width:0.667em;height:4.800em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.667em" height="4.800em" viewBox="0 0 667 4800"><path d="M347 1759 V0 H0 V84 H263 V1759 v1200 v1759 H0 v84 H347z
+M347 1759 V0 H263 V1759 v1200 v1759 h84z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span></span></span></span></span></span></div></figure><ol type="1" id="2acfab34-e8ee-80f2-a4d3-f43235de7790" class="numbered-list" start="2"><li>Pixel to Camera Coordinate Conversion - I implemented <code>pixel_to_camera(K, uv, s)</code>, which converted the points from the pixel coordinate space to the camera coordinate system. I solved for the point <style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><msub><mi>x</mi><mi>c</mi></msub><mo separator="true">,</mo><msub><mi>y</mi><mi>c</mi></msub><mo separator="true">,</mo><msub><mi>z</mi><mi>c</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(x_c, y_c, z_c)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.044em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span> by computing the following, where K is the intrinsic matrix and where s is the depth of the point along the optical axis. </li></ol><figure id="2acfab34-e8ee-80c4-b1f6-f2d0ac4ed2ab" class="equation"><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mrow><mo fence="true">[</mo><mtable rowspacing="0.16em" columnalign="center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>x</mi><mi>c</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>y</mi><mi>c</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>z</mi><mi>c</mi></msub></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><mo>=</mo><msup><mtext mathvariant="bold">K</mtext><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo fence="true">[</mo><mtable rowspacing="0.16em" columnalign="center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>u</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>v</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><mo>⋅</mo><mi>s</mi></mrow><annotation encoding="application/x-tex">\begin{bmatrix}x_c \\y_c \\z_c\end{bmatrix}=\textbf{K}^{-1}\begin{bmatrix}u \\v \\1\end{bmatrix}\cdot s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3.6em;vertical-align:-1.55em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.05em;"><span class="pstrut" style="height:5.6em;"></span><span style="width:0.667em;height:3.600em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.667em" height="3.600em" viewBox="0 0 667 3600"><path d="M403 1759 V84 H666 V0 H319 V1759 v0 v1759 h347 v-84
+H403z M403 1759 V0 H319 V1759 v0 v1759 h84z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.044em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.05em;"><span class="pstrut" style="height:5.6em;"></span><span style="width:0.667em;height:3.600em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.667em" height="3.600em" viewBox="0 0 667 3600"><path d="M347 1759 V0 H0 V84 H263 V1759 v0 v1759 H0 v84 H347z
+M347 1759 V0 H263 V1759 v0 v1759 h84z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3.6em;vertical-align:-1.55em;"></span><span class="mord"><span class="mord text"><span class="mord textbf">K</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8901em;"><span style="top:-3.139em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.05em;"><span class="pstrut" style="height:5.6em;"></span><span style="width:0.667em;height:3.600em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.667em" height="3.600em" viewBox="0 0 667 3600"><path d="M403 1759 V84 H666 V0 H319 V1759 v0 v1759 h347 v-84
+H403z M403 1759 V0 H319 V1759 v0 v1759 h84z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">u</span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span></span></span><span style="top:-1.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.05em;"><span class="pstrut" style="height:5.6em;"></span><span style="width:0.667em;height:3.600em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.667em" height="3.600em" viewBox="0 0 667 3600"><path d="M347 1759 V0 H0 V84 H263 V1759 v0 v1759 H0 v84 H347z
+M347 1759 V0 H263 V1759 v0 v1759 h84z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">s</span></span></span></span></span></div></figure><ol type="1" id="2acfab34-e8ee-8006-9662-ddb1fc625808" class="numbered-list" start="3"><li>Pixel to Ray - I implemented <code>pixel_to_ray(K, c2w, uv)</code> , which converts a pixel coordinate to a ray with a normalized direction and an origin and returns both. A ray is defined by both a direction and origin vector, and we want to compute this for every 2D pixel. To compute the origin, I take the translation component of the c2w matrix. To compute the ray direction for each pixel, I needed to compute the following (normalized ray direction). </li></ol><figure id="2acfab34-e8ee-80f3-99dd-f28d71be93db" class="equation"><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi mathvariant="bold">r</mi><mi>d</mi></msub><mo>=</mo><mfrac><mrow><msub><mi mathvariant="bold">X</mi><mi>w</mi></msub><mo>−</mo><msub><mi mathvariant="bold">r</mi><mi>o</mi></msub></mrow><msub><mrow><mo fence="true">∥</mo><msub><mi mathvariant="bold">X</mi><mi>w</mi></msub><mo>−</mo><msub><mi mathvariant="bold">r</mi><mi>o</mi></msub><mo fence="true">∥</mo></mrow><mn>2</mn></msub></mfrac></mrow><annotation encoding="application/x-tex">\mathbf{r}_d=\frac{\mathbf{X}_w - \mathbf{r}_o}{\left\lVert \mathbf{X}_w - \mathbf{r}_o \right\rVert_2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5944em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathbf">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">d</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.3488em;vertical-align:-0.9857em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3631em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="minner"><span class="minner"><span class="mopen delimcenter" style="top:0em;">∥</span><span class="mord"><span class="mord mathbf">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathbf">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">o</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">∥</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.4003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathbf">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathbf">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">o</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.9857em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div></figure><p id="2acfab34-e8ee-8062-819b-dcedcd6a77b1" class="">Using the previously implemented functions, I computed the above as follows: </p><figure id="2acfab34-e8ee-8010-a6cd-d63f4af01362" class="equation"><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mfrac><mrow><mi mathvariant="normal">transform</mi><mo>⁡</mo><mtext> ⁣</mtext><mrow><mo fence="true">(</mo><mi>c</mi><mn>2</mn><mi>w</mi><mo separator="true">,</mo><mtext>  </mtext><msup><mi>K</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="false">[</mo><mi>u</mi><mo separator="true">,</mo><mi>v</mi><mo separator="true">,</mo><mn>1</mn><msup><mo stretchy="false">]</mo><mi>T</mi></msup><mo fence="true">)</mo></mrow><mo>−</mo><msub><mi mathvariant="bold">r</mi><mi>o</mi></msub></mrow><mrow><mo fence="true">∥</mo><mi mathvariant="normal">transform</mi><mo>⁡</mo><mtext> ⁣</mtext><mrow><mo fence="true">(</mo><mi>c</mi><mn>2</mn><mi>w</mi><mo separator="true">,</mo><mtext>  </mtext><msup><mi>K</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="false">[</mo><mi>u</mi><mo separator="true">,</mo><mi>v</mi><mo separator="true">,</mo><mn>1</mn><msup><mo stretchy="false">]</mo><mi>T</mi></msup><mo fence="true">)</mo></mrow><mo>−</mo><msub><mi mathvariant="bold">r</mi><mi>o</mi></msub><mo fence="true">∥</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{\operatorname{transform}\!\left(c2w,\; K^{-1}[u, v, 1]^T\right) - \mathbf{r}_o}{\left\lVert \operatorname{transform}\!\left(c2w,\; K^{-1}[u, v, 1]^T\right) - \mathbf{r}_o \right\rVert}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.526em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.59em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="minner"><span class="mopen delimcenter" style="top:0em;">∥</span><span class="mop"><span class="mord mathrm">transform</span></span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord mathnormal">c</span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7401em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mopen">[</span><span class="mord mathnormal">u</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose"><span class="mclose">]</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7673em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">)</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathbf">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">o</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">∥</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.74em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop"><span class="mord mathrm">transform</span></span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">(</span></span><span class="mord mathnormal">c</span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mopen">[</span><span class="mord mathnormal">u</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose"><span class="mclose">]</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">)</span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathbf">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">o</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div></figure><p id="2acfab34-e8ee-80e8-9a13-e309efd309cf" class="">
+</p><p id="2acfab34-e8ee-801b-bb9d-d15a940702e4" class="">
+</p><p id="2acfab34-e8ee-8006-818c-f6c0256e868e" class=""><mark class="highlight-pink_background">2.2 - Sampling Rays from Images + Points along Rays </mark></p><ol type="1" id="2acfab34-e8ee-8083-917a-d37333dd5f87" class="numbered-list" start="1"><li>Sampling Rays from Images - I implemented global ray sampling by using the known K intrinsics and extrinsics to generate a full UV grid for each image, also adding a 0.5 offset to the center pixels. I then converted the pixels to to 3D camera coordinates, then to the world coordinates, and finally computed rays as noted above. I flattened and concatenated rays/directions/colors and randomly sampled batches of N rays (global sampling) during the training process.  </li></ol><ol type="1" id="2acfab34-e8ee-804e-9a72-c7deec0654a9" class="numbered-list" start="2"><li>Sampling Points along Rays - I uniformly divided the ray between the near and far bounds into n_samples = 64 evenly spaced depths using linspace, then computed each 3D sample point using the ray direction and ray origin as <style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">x</mi><mo>=</mo><msub><mi mathvariant="bold">r</mi><mi>o</mi></msub><mo>+</mo><mi>t</mi><mtext> </mtext><msub><mi mathvariant="bold">r</mi><mi>d</mi></msub></mrow><annotation encoding="application/x-tex">\mathbf{x} = \mathbf{r}_o + t\,\mathbf{r}_d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4444em;"></span><span class="mord mathbf">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathbf">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">o</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7651em;vertical-align:-0.15em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">d</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span>. To prevent overfitting to fixed sample locations, I also added random perturbation to <strong>t </strong>during the training so that different points along the ray were seen across different iterations. </li></ol><p id="2acfab34-e8ee-809d-8c82-c19a93099806" class="">
+</p><p id="2acfab34-e8ee-801e-a3ad-f1a5deadd20d" class=""><mark class="highlight-pink_background">2.3 - DataLoader</mark></p><p id="2acfab34-e8ee-8066-b6b6-c2b7d1d24ce9" class="">I extended the single image dataloader to multiview images by converting sampled pixel positions to rays and returning the ray origin, direction, and RGB color for each sampled pixel. To check correctness of my dataloader, I visualized the rays and samples in Viser. First, I used rays from a single camera, and then I scaled to all the cameras up to 100 rays.</p><p id="2acfab34-e8ee-801d-a36d-c485aeb89dbb" class="">
+</p><div id="2acfab34-e8ee-802a-84b1-d071dedf37ad" class="column-list"><div id="2acfab34-e8ee-8045-9117-da61ed9d7d01" style="width:33.333333333333336%" class="column"><p id="2acfab34-e8ee-8037-aa2a-c33a89c3740a" class="">Several Cameras </p></div><div id="2acfab34-e8ee-80a0-b4fd-e4d293a1f052" style="width:33.333333333333336%" class="column"><p id="2acfab34-e8ee-8089-b26c-f8bc3f699f4d" class="">Single Camera </p></div><div id="2acfab34-e8ee-808f-81fb-fa4820d3e1ca" style="width:33.33333333333333%" class="column"><p id="2acfab34-e8ee-8043-8b0b-c8e5bcc15576" class="">Top Left of Single Camera </p></div></div><div id="2acfab34-e8ee-806b-a5cc-dd5a51588343" class="column-list"><div id="2acfab34-e8ee-80c0-ac49-d0a2773c58a3" style="width:33.333333333333336%" class="column"><figure id="2a6fab34-e8ee-8011-a428-fc3774ea164a" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/deliverable1.png"><img style="width:672px" src="Project%204%20-%20Neural%20Radiance%20Field/deliverable1.png"/></a></figure></div><div id="2acfab34-e8ee-80d3-a0aa-ee318dead05d" style="width:33.333333333333336%" class="column"><figure id="2a6fab34-e8ee-8005-b398-fcc27f162481" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/render(3).png"><img style="width:938px" src="Project%204%20-%20Neural%20Radiance%20Field/render(3).png"/></a></figure></div><div id="2acfab34-e8ee-80b0-866a-c4452b958768" style="width:33.33333333333333%" class="column"><figure id="2a6fab34-e8ee-80e3-8caf-cecb76e121d2" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/render(5).png"><img style="width:938px" src="Project%204%20-%20Neural%20Radiance%20Field/render(5).png"/></a></figure></div></div><p id="2acfab34-e8ee-8021-aede-e518e6119e03" class="">
+</p><p id="2acfab34-e8ee-805c-840d-d99d5c161455" class="">
+</p><p id="2acfab34-e8ee-80cf-8cdc-dfa28755303d" class=""><mark class="highlight-pink_background">2.4 - Neural Radiance Field</mark></p><p id="2acfab34-e8ee-80e7-940a-cf43cfdc8afe" class="">I implemented my NeRF MLP so that it predicts the density and color of each 3D sample point. The input to my network is the 3D world coordinate of the sample point <strong>x </strong>and the 3D view direction. I encoded both with positional encoding, with higher frequency levels <style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mrow><mi>x</mi><mi>y</mi><mi>z</mi></mrow></msub></mrow><annotation encoding="application/x-tex">L_{xyz}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="mord mathnormal mtight" style="margin-right:0.04398em;">yz</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span> = 10 for finer grained spatial coordinates and lower frequency <style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mrow><mi>d</mi><mi>i</mi><mi>r</mi></mrow></msub></mrow><annotation encoding="application/x-tex">L_{dir}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span> = 4 for the smoother view directions as suggested by the spec. I then passed the encoded position through an 8-layer MLP with width of 256 and a skip connection at the 4th layer where the encoded input is concatenated to the feature map so that the network can retain spatial information. I then split the network’s output to two heads, a density head with softplus so that it has nonnegative density values, and a color head which concatenates the learned features with encoded view direction. I then passed the color head through 2 more linear layers, and then a sigmoid activation, to produce RGB values. </p><p id="2acfab34-e8ee-80e9-b599-d793eb15a5ca" class="">
+</p><p id="2acfab34-e8ee-8012-8ed0-cca1ad11f967" class=""><mark class="highlight-pink_background">2.5 - Volume Rendering </mark></p><p id="2acfab34-e8ee-8050-9307-d8fdda694bac" class="">I approximated the continuous volume rendering equation by discretizing each ray into N sampled points. For each of these points, my neural network predicted the color <style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">c_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span> and density <style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span>. I then compute the accumulated transmittance <style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>i</mi></msub><mo>=</mo><mi>exp</mi><mo>⁡</mo><mtext> ⁣</mtext><mrow><mo fence="true">(</mo><mo>−</mo><msubsup><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>σ</mi><mi>j</mi></msub><mtext> </mtext><msub><mi>δ</mi><mi>j</mi></msub><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">T_i = \exp\!\left(-\sum_{j=1}^{i-1} \sigma_j \, \delta_j\right)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.8em;vertical-align:-0.65em;"></span><span class="mop">exp</span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size2">(</span></span><span class="mord">−</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9646em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4358em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0379em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size2">)</span></span></span></span></span></span></span><span>﻿</span></span> which represents the probability that the ray has not terminated before reaching the ith sample. The contribution from each point is weighted by its termination probability <style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>exp</mi><mo>⁡</mo><mo stretchy="false">(</mo><mo>−</mo><msub><mi>σ</mi><mi>i</mi></msub><mtext> </mtext><msub><mi>δ</mi><mi>i</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">1 - \exp(-\sigma_i \, \delta_i)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">exp</span><span class="mopen">(</span><span class="mord">−</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0379em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span>, and then I got the final pixel color by summing over each of the samples like this <style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>C</mi><mo>^</mo></mover><mo stretchy="false">(</mo><mi mathvariant="bold">r</mi><mo stretchy="false">)</mo><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup><msub><mi>T</mi><mi>i</mi></msub><mrow><mo fence="true">(</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>σ</mi><mi>i</mi></msub><msub><mi>δ</mi><mi>i</mi></msub></mrow></msup><mo fence="true">)</mo></mrow><msub><mi>c</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\hat{C}(\mathbf{r}) = \sum_{i=1}^{N} T_i \left(1 - e^{-\sigma_i \delta_i}\right) c_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1968em;vertical-align:-0.25em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathbf">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.3312em;vertical-align:-0.35em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9812em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">(</span></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3281em;"><span style="top:-2.357em;margin-left:-0.0359em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03785em;">δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3281em;"><span style="top:-2.357em;margin-left:-0.0379em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">)</span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span> and verified my implemented via the provided assert statements.</p><p id="2acfab34-e8ee-8069-99e4-c279729b1894" class="">
+</p><p id="2acfab34-e8ee-8027-9fe5-ed5610c92172" class=""><mark class="highlight-yellow_background"><strong>Lego Dataset NeRF Training </strong></mark></p><p id="2acfab34-e8ee-8009-8574-da9ffc4b50db" class="">I trained NeRF as sanity check first on Lego Dataset with a 200x200 provided resolution based on the provided packaged NPZ dataset, 100 train images, and set the hyperparameters and training parameters of my neural network as follows:</p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2acfab34-e8ee-80fd-b840-f72320d229ea"><div style="width:100%"><p id="2acfab34-e8ee-8018-a953-ee90b2f3b4d2" class="">Near: 2.0</p><p id="2acfab34-e8ee-80d9-957d-d57adb54b924" class="">Far: 6.0</p><p id="2acfab34-e8ee-80c4-ba9e-e1be381754c1" class="">Learning Rate: 5e-4 </p><p id="2acfab34-e8ee-80dc-8c2c-dc54eaf51033" class="">Train Iterations: 1000, and then 25000</p><p id="2acfab34-e8ee-8070-9cc9-f1189b53cdb8" class="">Adam Optimizer </p><p id="2acfab34-e8ee-800c-91f0-e5f3bfcf28a5" class="">n_samples per ray: 64 </p><p id="2acfab34-e8ee-8082-a95d-cde13425b99a" class="">Batch Size: 10000 rays / iteration </p></div></figure><p id="2acfab34-e8ee-80fa-b552-cdd4a64782b9" class=""><strong>Training Progression (iterations 0, 200, 400, 600, 800, 1000)</strong></p><figure id="2a6fab34-e8ee-808f-bbe0-f61bfcbe9094" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2031.png"><img style="width:938px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2031.png"/></a></figure><p id="2acfab34-e8ee-809c-a39a-c72d29f1ee70" class=""><strong>Validation Progression (from various camera views) </strong></p><p id="2a6fab34-e8ee-804e-bbaa-ea4cc810c7d7" class="">from camera 5</p><div id="2a6fab34-e8ee-8014-b722-f73ae073b8fa" class="column-list"><div id="2a6fab34-e8ee-80fa-b7b8-dacfb05334b6" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-80af-8848-cc8f2923d9f5" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2032.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2032.png"/></a></figure></div><div id="2a6fab34-e8ee-8048-b538-d4f8c28f3838" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-808d-84ef-da0f18b9775a" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2033.png"><img style="width:150.40000915527344px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2033.png"/></a></figure></div><div id="2a6fab34-e8ee-8080-9ee1-d91889df174d" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-8072-8013-c87e398f2c87" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2034.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2034.png"/></a></figure></div><div id="2a6fab34-e8ee-80e8-ba8e-d97c5332ada1" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-80d9-8132-dcc95b00ac10" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2035.png"><img style="width:199.5px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2035.png"/></a></figure></div><div id="2a6fab34-e8ee-8065-9590-e29f9fe08ca0" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-8077-a4b4-ff71186a4d6c" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2036.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2036.png"/></a></figure></div><div id="2a6fab34-e8ee-807d-8d2e-caa9e92dcea2" style="width:16.666666666666664%" class="column"><figure id="2a6fab34-e8ee-8003-8eb4-f8db0e36b1a0" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2037.png"><img style="width:117.66667175292969px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2037.png"/></a></figure></div></div><p id="2a6fab34-e8ee-80ea-996e-fc81458a1399" class="">from camera 3</p><div id="2a6fab34-e8ee-80c2-8dc0-ef703493eddb" class="column-list"><div id="2a6fab34-e8ee-80bf-8351-e15e5d33cad4" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-801b-8b16-ee60ff12923a" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2038.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2038.png"/></a></figure></div><div id="2a6fab34-e8ee-80bf-b55f-c9418a81ee5a" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-8078-8b9e-c6e0e6d5f357" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2039.png"><img style="width:150.40000915527344px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2039.png"/></a></figure></div><div id="2a6fab34-e8ee-8088-b562-e4d24b963981" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-80d0-9734-d123db2306ba" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2040.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2040.png"/></a></figure></div><div id="2a6fab34-e8ee-80d9-84fd-fe81148ca7e3" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-8099-9399-cec3ae5d0799" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2041.png"><img style="width:199.5px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2041.png"/></a></figure></div><div id="2a6fab34-e8ee-8076-ad8b-cb474f04b990" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-80a4-966d-c3b27e76d2d2" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2042.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2042.png"/></a></figure></div><div id="2a6fab34-e8ee-80e0-8f2b-de41d29b1b8b" style="width:16.666666666666664%" class="column"><figure id="2a6fab34-e8ee-801f-9f70-e2b16a11eb4d" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2043.png"><img style="width:117.66667175292969px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2043.png"/></a></figure></div></div><p id="2a6fab34-e8ee-80ef-9063-ead78d471b00" class="">from camera 2</p><div id="2a6fab34-e8ee-80cd-b67d-d97a631f0b04" class="column-list"><div id="2a6fab34-e8ee-808e-8d25-e494a351b306" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-802d-8a22-f8decab9e904" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2044.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2044.png"/></a></figure></div><div id="2a6fab34-e8ee-8064-9d8f-d7add63e555d" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-80ad-ab6b-c0db8fe67b99" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2045.png"><img style="width:150.40000915527344px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2045.png"/></a></figure></div><div id="2a6fab34-e8ee-80ab-9164-e80a5132b86a" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-804c-8772-f8c7c11bc7d2" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2046.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2046.png"/></a></figure></div><div id="2a6fab34-e8ee-80d8-9990-ff517717904f" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-808e-a6e2-c8a20ba0efc8" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2047.png"><img style="width:199.5px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2047.png"/></a></figure></div><div id="2a6fab34-e8ee-8055-8da1-f4df37bb5455" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-802c-bb12-c4e8d3d5d8d9" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2048.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2048.png"/></a></figure></div><div id="2a6fab34-e8ee-8013-8157-fc53373b0ecd" style="width:16.666666666666664%" class="column"><figure id="2a6fab34-e8ee-80e1-bafc-f6cb15614ab8" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2049.png"><img style="width:117.66667175292969px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2049.png"/></a></figure></div></div><p id="2a6fab34-e8ee-8021-aa0b-da536b543eb9" class="">from camera 1</p><div id="2a6fab34-e8ee-80a2-8ea8-fb4d57cdb001" class="column-list"><div id="2a6fab34-e8ee-8041-a6d9-cb4cdb8cc20c" style="width:16.666666666666664%" class="column"><figure id="2a6fab34-e8ee-8005-b694-ec70af4d39ae" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2050.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2050.png"/></a></figure><p id="2abfab34-e8ee-80da-848f-cc6bf0a6cb49" class="">
+</p></div><div id="2a6fab34-e8ee-80ec-8af9-fe65609ab4f1" style="width:16.66666666666667%" class="column"><figure id="2a6fab34-e8ee-803e-bf0f-d389936771cb" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2051.png"><img style="width:150.40000915527344px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2051.png"/></a></figure><p id="2a6fab34-e8ee-8096-9d2c-c97610c64b30" class="">
+</p></div><div id="2a6fab34-e8ee-8067-bd71-c56d6cb683e4" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-800a-b5e7-e576406a3e14" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2052.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2052.png"/></a></figure></div><div id="2a6fab34-e8ee-80c8-9b0d-f042e9a79b3d" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-80da-a44e-ec3176cbe972" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2053.png"><img style="width:199.5px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2053.png"/></a></figure></div><div id="2a6fab34-e8ee-8076-8862-fa80f3995d79" style="width:16.666666666666668%" class="column"><figure id="2a6fab34-e8ee-805b-9d32-f3d2559ae891" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2054.png"><img style="width:150.39999389648438px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2054.png"/></a></figure></div><div id="2a6fab34-e8ee-807b-b3f5-ca14ec8c6553" style="width:16.666666666666664%" class="column"><figure id="2a6fab34-e8ee-80eb-be12-ece1dce6c4d4" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2055.png"><img style="width:117.66667175292969px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2055.png"/></a></figure></div></div><div id="2acfab34-e8ee-80dc-9713-c3bbd6b08a94" class="column-list"><div id="2acfab34-e8ee-80ef-a9a0-cc2dc194190b" style="width:50%" class="column"><p id="2acfab34-e8ee-807d-9f4e-f62ef4b54398" class=""><strong>Training MSE Loss </strong></p></div><div id="2acfab34-e8ee-805f-9d4b-e4db23ca2a94" style="width:50%" class="column"><p id="2acfab34-e8ee-8006-af8a-cb678c91cfd3" class=""><strong>Validation PSNR </strong></p></div></div><div id="2acfab34-e8ee-8091-a651-e649db858ca0" class="column-list"><div id="2acfab34-e8ee-8079-90fe-f2d43e52b044" style="width:50%" class="column"><figure id="2abfab34-e8ee-8010-9309-c240f503e1e9" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2056.png"><img style="width:1146px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2056.png"/></a></figure></div><div id="2acfab34-e8ee-8047-a218-ca4470b514f7" style="width:50%" class="column"><figure id="2abfab34-e8ee-80d7-8331-d93e969e8dcc" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2057.png"><img style="width:1146px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2057.png"/></a></figure></div></div><p id="2acfab34-e8ee-8090-9fbb-ed5ca5b00b72" class="">Overall, I was able to achieve of 24.05 dB (over 23 dB) validation PSNR within 1000 training iterations.</p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2acfab34-e8ee-8017-932c-e4bf04a58bc2"><div style="width:100%"><p id="2acfab34-e8ee-8006-9215-e77cd1e1fb59" class=""><em>Command Line Training Output:</em></p><p id="2acfab34-e8ee-8072-aa44-c473508ea275" class="">[0001/1000] loss=0.17358 psnr=7.61 (1.7s)<br/>val PSNR (mean over 6): 7.61 dB<br/>[0100/1000] loss=0.05099 psnr=12.93 (42.6s)<br/>[0200/1000] loss=0.02001 psnr=16.99 (76.2s)<br/>val PSNR (mean over 6): 17.06 dB<br/>[0300/1000] loss=0.01059 psnr=19.75 (116.3s)<br/>[0400/1000] loss=0.00852 psnr=20.70 (149.9s)<br/>val PSNR (mean over 6): 21.11 dB<br/>[0500/1000] loss=0.00747 psnr=21.27 (190.2s)<br/>[0600/1000] loss=0.00681 psnr=21.67 (223.8s)<br/>val PSNR (mean over 6): 22.68 dB<br/>[0700/1000] loss=0.00598 psnr=22.23 (264.1s)<br/>[0800/1000] loss=0.00551 psnr=22.59 (297.6s)<br/>val PSNR (mean over 6): 23.48 dB<br/>[0900/1000] loss=0.00496 psnr=23.05 (338.0s)<br/>[1000/1000] loss=0.00451 psnr=23.46 (371.6s)<br/>val PSNR (mean over 6): 24.05 dB</p></div></figure><p id="2acfab34-e8ee-806e-940a-ff4259a47c88" class=""><strong>Novel Views + Spherical Rendered Video</strong></p><p id="2acfab34-e8ee-80cc-8ba1-fcb92417c3bd" class="">Utilizing the test camera poses, I rendered the novel views after training separately for both 1000 iterations and 25000 iterations via a spherical rendering video using c2ws_test in the npz file. </p><div id="2acfab34-e8ee-8036-b153-ef4644e4fb22" class="column-list"><div id="2acfab34-e8ee-8015-a60b-e10683515e29" style="width:50%" class="column"><p id="2acfab34-e8ee-80f8-870e-f3015a07bc86" class="">After 1000 iterations (10 min):</p></div><div id="2acfab34-e8ee-809c-ab29-c3aaf2a5524c" style="width:50%" class="column"><p id="2acfab34-e8ee-8040-a184-cdb84e66869c" class="">After 25000 iterations (~2 hours):</p></div></div><div id="2acfab34-e8ee-8062-b9ea-ef99ff62b10c" class="column-list"><div id="2acfab34-e8ee-80ef-b387-e386341968d9" style="width:50%" class="column"><figure id="2acfab34-e8ee-8024-bca7-f90b2cc92897"><div class="source"><a href="Project%204%20-%20Neural%20Radiance%20Field/lego_rotation.mp4">attachment:c687c34f-ad87-4809-9f95-90a41abd6b7a:lego_rotation.mp4</a></div></figure></div><div id="2acfab34-e8ee-8001-8268-db2d595a4fde" style="width:50.000000000000014%" class="column"><figure id="2acfab34-e8ee-80f9-8dfd-d57ad3efb27e"><div class="source"><a href="Project%204%20-%20Neural%20Radiance%20Field/lego_rotation%201.mp4">attachment:7f36d8fa-6970-4457-b696-0b422a100213:lego_rotation.mp4</a></div></figure></div></div><p id="2acfab34-e8ee-803c-b3dd-ede98956cd00" class="">
+</p><p id="2acfab34-e8ee-80b6-8a3e-c03937396c1e" class=""><mark class="highlight-pink_background">2.6 - Training with my own data </mark></p><p id="2acfab34-e8ee-806c-b393-c93d6bbee495" class=""><mark class="highlight-teal_background">Sunglasses Case </mark></p><p id="2acfab34-e8ee-800c-89ba-d1f4f47a7974" class="">I trained the NeRF MLP on the sunglasses case captured data from Part 0 and adjusted the hyperparameters and train parameters as follows. I adjusted near and far hyperparameters based on the different object scale of the sunglasses case and after visualizing the sampling rays in the Viser, ensuring they remained underneath the dome. In my code, I converted BGR → RGB images as well, and I set the point size in Viser to 0.003. I trained for more iterations to get a better quality NeRF rendered image as well, taking ~2 hours to train.</p><div id="2acfab34-e8ee-8085-a4c7-f5a89ad9740b" class="column-list"><div id="2acfab34-e8ee-8001-9357-fa76d83a7f77" style="width:50%" class="column"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2acfab34-e8ee-8053-906d-f42d490f6e87"><div style="width:100%"><p id="2acfab34-e8ee-808e-b6fe-da1d1725d589" class="">Near: 0.02</p><p id="2acfab34-e8ee-80e3-ad8d-f4a37a9005ae" class="">Far: 0.6</p><p id="2acfab34-e8ee-8067-9ff4-dce6a53d420d" class="">Train Iterations: 20000</p><p id="2acfab34-e8ee-8076-900b-f3976fd4977b" class="">Image Resolution: 378 x 504 (one eighth original size) </p></div></figure><p id="2acfab34-e8ee-80a2-a2d4-e9396019d21a" class="">
+</p></div><div id="2acfab34-e8ee-808c-90f9-e8d553f15716" style="width:50%" class="column"><figure id="2acfab34-e8ee-80e9-a9e5-df24cfa03a8f" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-14_at_3.51.05_PM.png"><img style="width:1012.984375px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-14_at_3.51.05_PM.png"/></a></figure></div></div><p id="2acfab34-e8ee-8058-a77f-d88be292bf20" class="">Intermediate Training Progression (iterations 1,4000,8000,12000,16000,20000)</p><figure id="2acfab34-e8ee-80a4-999c-f1bd040dfaf3" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2058.png"><img style="width:2324px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2058.png"/></a></figure><p id="2acfab34-e8ee-801a-8e27-c75894759494" class="">Intermediate Validation Progression (iterations 1,4000,8000,12000,16000,20000)</p><div id="2acfab34-e8ee-80c1-9c7d-fcc643b9b71a" class="column-list"><div id="2acfab34-e8ee-80e1-8a18-d0d15b4b7082" style="width:16.666666666666675%" class="column"><figure id="2acfab34-e8ee-80a4-8699-fef88ada0485" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2059.png"><img style="width:132px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2059.png"/></a></figure></div><div id="2acfab34-e8ee-8016-8b89-ebb8d8a38135" style="width:16.666666666666668%" class="column"><figure id="2acfab34-e8ee-8051-836f-e8bf561698c6" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2060.png"><img style="width:264.9921875px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2060.png"/></a></figure></div><div id="2acfab34-e8ee-8038-a9c6-db00e3d96b4f" style="width:16.666666666666668%" class="column"><figure id="2acfab34-e8ee-807a-adb5-ebb26144a92b" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2061.png"><img style="width:264.9921875px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2061.png"/></a></figure></div><div id="2acfab34-e8ee-8011-a14c-d35478691ba4" style="width:16.666666666666668%" class="column"><figure id="2acfab34-e8ee-8013-900b-d7b035a2fcc7" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2062.png"><img style="width:187.2421875px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2062.png"/></a></figure></div><div id="2acfab34-e8ee-801b-b7a3-ca8218a70322" style="width:16.666666666666668%" class="column"><figure id="2acfab34-e8ee-8015-ad37-d55bd2937e72" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2063.png"><img style="width:140.5859375px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2063.png"/></a></figure></div><div id="2acfab34-e8ee-80e7-a610-ec7a03b61f14" style="width:16.666666666666664%" class="column"><figure id="2acfab34-e8ee-8014-acb5-f42a5568c3c6" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2064.png"><img style="width:138.8203125px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2064.png"/></a></figure></div></div><div id="2acfab34-e8ee-801d-b139-ce2c4fa99bcd" class="column-list"><div id="2acfab34-e8ee-80ff-a65f-efa90ba0c29f" style="width:50%" class="column"><p id="2acfab34-e8ee-8011-97a8-f84ac46d2d1d" class="">Training MSE Loss</p><figure id="2acfab34-e8ee-801a-b5ff-c27c4164ba5c" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2065.png"><img style="width:528px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2065.png"/></a></figure><p id="2acfab34-e8ee-809d-8aac-da77848a1b72" class="">
+</p><p id="2acfab34-e8ee-8017-8b21-ff47e8ede848" class=""><strong>Novel View Rendering GIF</strong></p><p id="2acfab34-e8ee-80a9-a4f8-dc8af32d8fe2" class="">Please note: the GIF will not render on the PDF, please view on the website </p><figure id="2acfab34-e8ee-8034-bd36-ebad7bbbd519" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/gif.gif"><img style="width:296.4921875px" src="Project%204%20-%20Neural%20Radiance%20Field/gif.gif"/></a></figure><p id="2acfab34-e8ee-8049-9df7-d8e97ae0a3ad" class="">
+</p></div><div id="2acfab34-e8ee-8014-a2c1-c8510a497cad" style="width:50%" class="column"><p id="2acfab34-e8ee-807e-85ec-e62242e93fbe" class="">Validation PSNR </p><figure id="2acfab34-e8ee-80b3-9cae-eb94112abefd" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2066.png"><img style="width:480px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2066.png"/></a></figure><p id="2acfab34-e8ee-80ea-bd11-c6fd33d24091" class="">
+</p><p id="2acfab34-e8ee-805f-bad2-ce9f9c7a55d6" class="">
+</p><p id="2acfab34-e8ee-8031-aa8f-ef26e74a5325" class="">
+</p><p id="2acfab34-e8ee-8061-80ea-d80144163719" class="">
+</p><p id="2acfab34-e8ee-801d-86ee-fe0886716eaa" class="">
+</p><p id="2acfab34-e8ee-802c-b881-e8970d50440b" class="">
+</p><p id="2acfab34-e8ee-8042-bd05-c2df420d6b58" class="">
+</p><p id="2acfab34-e8ee-8083-b91d-d0e8c007699b" class="">
+</p><p id="2acfab34-e8ee-8012-bb4b-cf7e6a649180" class="">
+</p></div></div><p id="2acfab34-e8ee-80ae-bcb7-f60d27da3cc0" class="">I faced several challenges in debugging, including setting the camera scale, lowering image resolution, selecting point size in Viser to 0.003, and selecting the appropriate hyperparameters for the object scale. I trained my NeRF MLP on the lafufu dataset to debug this.</p><p id="2acfab34-e8ee-80cc-a85d-c6aad0e2de09" class=""><mark class="highlight-brown_background">Sanity Check (Lafufu Dataset) </mark></p><div id="2acfab34-e8ee-80b5-8e50-ca379cd6dd3e" class="column-list"><div id="2acfab34-e8ee-80d8-b55e-c0d07686498d" style="width:50%" class="column"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2acfab34-e8ee-8084-93db-d3539a2f6d39"><div style="width:100%"><p id="2acfab34-e8ee-8047-9066-f74997342196" class="">Near: 0.02</p><p id="2acfab34-e8ee-80d6-a695-c83011d96017" class="">Far: 0.5</p><p id="2acfab34-e8ee-8094-8cdb-c7beffd94154" class="">Train Iterations: 15000</p><p id="2acfab34-e8ee-801a-abe3-f8a09bfe2ccd" class="">Image Resolution: 378 x 504 (one eighth original size) </p></div></figure></div><div id="2acfab34-e8ee-8093-a3f7-c74b77308636" style="width:50%" class="column"><figure id="2acfab34-e8ee-80be-9fd7-f36617faa28d" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_8.54.14_PM.png"><img style="width:1131.984375px" src="Project%204%20-%20Neural%20Radiance%20Field/Screenshot_2025-11-12_at_8.54.14_PM.png"/></a></figure></div></div><p id="2acfab34-e8ee-802a-837c-e18a74213615" class="">Training Progress Strip </p><figure id="2acfab34-e8ee-80bf-9cfe-f1cbcf6a076a" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2067.png"><img style="width:4340px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2067.png"/></a></figure><p id="2acfab34-e8ee-8037-882a-eda4ea551a23" class="">Train Images (at 15000 iterations)</p><div id="2abfab34-e8ee-80d0-a0a8-df6dc7b11e84" class="column-list"><div id="2abfab34-e8ee-80d9-a731-e121ca70899c" style="width:25%" class="column"><figure id="2abfab34-e8ee-8006-adae-e3c75934dad7" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2068.png"><img style="width:548.984375px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2068.png"/></a></figure></div><div id="2abfab34-e8ee-8019-aa36-cd31344a1e7f" style="width:25%" class="column"><figure id="2abfab34-e8ee-805e-a925-f9745c9ab4ce" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2069.png"><img style="width:288px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2069.png"/></a></figure></div><div id="2abfab34-e8ee-80f9-8505-fe2a0435c28c" style="width:25%" class="column"><figure id="2abfab34-e8ee-80cd-ba10-d5c2b8722189" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2070.png"><img style="width:548.984375px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2070.png"/></a></figure></div><div id="2abfab34-e8ee-80f0-8ec0-c9502b53b7ea" style="width:25%" class="column"><figure id="2abfab34-e8ee-804c-83df-ed898bb47adc" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2071.png"><img style="width:272.2421875px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2071.png"/></a></figure></div></div><p id="2abfab34-e8ee-8029-af31-f22cb43a0e58" class="">Validation Image</p><figure id="2acfab34-e8ee-80a5-8dbb-d3b0bea7072c" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2072.png"><img style="width:336px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2072.png"/></a></figure><p id="2acfab34-e8ee-8087-bec0-d141dd356087" class=""><strong>Novel View Synthesis GIF</strong></p><figure id="2acfab34-e8ee-80bd-8c45-e0fccc019806"><div class="source"><a href="Project%204%20-%20Neural%20Radiance%20Field/nerf.mp4">attachment:a7655ecf-8453-4bc0-990a-970f9f3070a6:nerf.mp4</a></div></figure><p id="2acfab34-e8ee-8094-b479-dc3f24f07e4e" class="">
+</p><div id="2acfab34-e8ee-80e8-9ee7-c2bf253a0758" class="column-list"><div id="2acfab34-e8ee-80fa-93f2-e2ab7136d587" style="width:50%" class="column"><p id="2abfab34-e8ee-80a2-8b35-e4c5b485d71a" class="">Training MSE Loss</p><figure id="2aafab34-e8ee-8097-a868-d9a536cfdab1" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2073.png"><img style="width:549px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2073.png"/></a></figure></div><div id="2acfab34-e8ee-80b9-af90-efbede680e07" style="width:50%" class="column"><p id="2acfab34-e8ee-8021-acfd-eebfed9b84dd" class="">Validation PSNR </p><figure id="2aafab34-e8ee-80d4-a658-f90a4cd4a3ed" class="image"><a href="Project%204%20-%20Neural%20Radiance%20Field/image%2074.png"><img style="width:350.65625px" src="Project%204%20-%20Neural%20Radiance%20Field/image%2074.png"/></a></figure></div></div><h3 id="2acfab34-e8ee-80f6-b0c0-c2166655fd91" class="">Reflection</h3><p id="2acfab34-e8ee-8002-9fef-e27e293fce91" class="">Through this project, I implemented a complete Neural Radiance Field (NeRF) pipeline. I learned the different parts, from camera calibration and ray sampling to neural field training and novel-view rendering. I learned how neural networks can learn continuous 3D scene representations from multi-view images, which was exciting.</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
