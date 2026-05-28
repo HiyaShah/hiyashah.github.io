@@ -5,25 +5,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hiya Shah</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" />
 </head>
 <body>
   <div class="card">
-    <!-- Replace headshot-placeholder with: <img class="headshot" src="headshot.jpg" alt="Hiya Shah" /> -->
-    <div class="headshot-placeholder"></div>
+    <div class="headshot-col">
+      <img class="headshot" src="assets/headshot.jpeg" alt="Hiya Shah" />
+      <nav class="side-nav">
+        <a class="side-menu" href="experiences.html">projects & experiences</a>
+        <a class="side-menu" href="course-notes.html">teaching notes</a>
+      </nav>
+      <button class="coffee-btn" id="flowerBtn"></button>
+    </div>
 
     <div class="bio">
-      <h1>Hiya Shah</h1>
+      <h1>hiya shah</h1>
       <p>
-        I'm a student at UC Berkeley working on robotics and machine learning.
-        My research focuses on safe reinforcement learning for dexterous manipulation —
-        combining theoretical safety guarantees with high-performance control.
+        hi, I'm hiya! I am a master's student (and recent B.S. grad!) in uc berkeley's electrical engineering & computer science (eecs) dept. I research reinforcement learning for robotics, advised by prof. Claire Tomlin.
+        <br><br>
+        by day, I am an engineer at Meta Reality Labs, where I build ML infrastructure for display & AI glasses.
+        <br><br>
+        I care about the responsible design of safe, human-centered robotics systems.
+        <br><br>
+        always happy to chat :) 
+        <!-- I've loved:
+        <br><br>
+        - teaching CS 189 (intro to machine learning) and EECS 127 (optimization models) at uc berkeley
+        - being part of the Accel scholar and Kleiner Perkins fellowship communities
+         -->
+        <!-- Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32. -->
+
+
       </p>
       <div class="links">
-        <a href="mailto:hiyashah@berkeley.edu">Email</a>
-        <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://linkedin.com/in/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:hiyashah@berkeley.edu">email</a>
+        <a href="https://github.com/" target="_blank" rel="noopener">github</a>
+        <a href="https://linkedin.com/in/hiyashah" target="_blank" rel="noopener">linkedIn</a>
+        <a href="https://scholar.google.com/citations?user=hiyashah" target="_blank" rel="noopener">scholar</a>
       </div>
     </div>
   </div>
+  <script>
+    const flowers = ['🌸', '🌺', '🌼', '🌻', '🌷', '🌹'];
+    const randomFlower = () => flowers[Math.floor(Math.random() * flowers.length)];
+
+    const makeCursor = (emoji) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 32;
+      canvas.height = 32;
+      const ctx = canvas.getContext('2d');
+      ctx.font = '24px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(emoji, 16, 16);
+      return `url(${canvas.toDataURL()}) 16 16, auto`;
+    };
+
+    const btn = document.getElementById('flowerBtn');
+    let on = false;
+    let currentFlower = randomFlower();
+    btn.textContent = `${currentFlower} you deserve flowers!`;
+
+    btn.addEventListener('click', () => {
+      on = !on;
+      if (on) {
+        document.body.style.cursor = makeCursor(currentFlower);
+        btn.textContent = '🏺 place flowers in vase';
+      } else {
+        document.body.style.cursor = '';
+        currentFlower = randomFlower();
+        btn.textContent = `${currentFlower} you deserve flowers!`;
+      }
+    });
+  </script>
 </body>
 </html>
